@@ -120,10 +120,15 @@ function processCommand(command) {
     history.push("> " + command);
     let response = handleCommand(command);
     
-    if (response === "start_minigame") {
-        gameState = "minigame";
-    } else if (response === "exit_terminal") {
-        gameState = "idle";
+    if (Array.isArray(response)) { // If handleCommand returns multiple values
+        let [message, state] = response;
+        history.push(message);
+
+        if (state === "game_win") {
+            gameState = "game_win"; // Transition to the win screen
+        } else if (state === "start_minigame") {
+            gameState = "minigame";
+        }
     } else {
         history.push(response);
     }
@@ -133,10 +138,10 @@ function processCommand(command) {
 
 // Draw different states
 function drawScreen() {
-    ctx.fillStyle = "black"; // Set background
+    ctx.fillStyle = "black"; 
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = "rgb(0, 255, 0)"; // Set text color to green
+    
+    ctx.fillStyle = "rgb(0, 255, 0)";
 
     if (gameState === "idle") {
         drawIdleScreen();
@@ -144,6 +149,10 @@ function drawScreen() {
         drawTerminal();
     } else if (gameState === "minigame") {
         drawMinigameScreen();
+    } else if (gameState === "game_win") {
+        drawGameWinScreen();
+    } else if (gameState === "game_over") {
+        drawGameOverScreen();
     }
 
     drawScanline();
@@ -158,25 +167,24 @@ function drawIdleScreen() {
 // Draw the terminal UI
 function drawTerminal() {
     ctx.fillStyle = "rgb(0, 255, 0)";
-    let y = 20;
     let padding = 10;
     let maxWidth = canvas.width - (padding * 2);
+    let y = 20; // Always start at the top
 
     for (let line of history) {
         let wrappedLines = wrapText(line, maxWidth, ctx.font);
         for (let wrappedLine of wrappedLines) {
             ctx.fillText(wrappedLine, padding, y);
-            y += 20;
+            y += 20; // Correctly move down for each history line
         }
     }
 
-    // Render input with cursor in the correct position
-    let inputBeforeCursor = input.slice(0, cursorPosition);
-    let inputAfterCursor = input.slice(cursorPosition);
-    let cursor = showCursor ? "_" : " ";
+    // ✅ DO NOT manually reset y here; let history determine placement
 
-    ctx.fillText("> " + inputBeforeCursor + cursor + inputAfterCursor, padding, y);
+    let cursor = showCursor ? "_" : " ";
+    ctx.fillText("> " + input + cursor, padding, y);
 }
+
 
 function wrapText(text, maxWidth, font) {
     let words = text.split(" ");
@@ -217,40 +225,68 @@ function drawScanline() {
 document.addEventListener("keydown", (event) => {
     if (gameState === "minigame") {
         if (event.key === "c") { // Success
-            let reward = Math.floor(Math.random() * 15) + 5; // 5-15 distance reward
-            distanceLeft -= reward;
+            if (currentRoute && routes[currentRoute]) {
+                let reward = routes[currentRoute]; // Get the distance reward
+                distanceLeft -= reward; // Deduct distance
 
-            if (distanceLeft <= 0) {
-                minigameResult = `Mission successful! You've arrived at ${currentDestination}!`;
-                delete destinations[currentDestination]; // Remove from list
-                hasStartedJourney = false;
-                gameState = "idle";
-                history.push(minigameResult);
-            } else {
-                minigameResult = `Success! -${reward} distance. Remaining: ${distanceLeft}`;
-                gameState = "terminal";
+                delete routes[currentRoute]; // Remove route from the list
+                currentRoute = null; // Clear the selected route
+
+                if (distanceLeft <= 0) {
+                    minigameResult = `Mission successful! You've arrived at your destination!`;
+                    gameState = "game_win"; // Transition to win screen
+                } else {
+                    minigameResult = `Success! -${reward} distance. Remaining: ${distanceLeft}`;
+                    gameState = "terminal";
+                }
                 history.push(minigameResult);
             }
         } 
         
         else if (event.key === "f") { // Failure
             shipHealth -= 1;
+            delete routes[currentRoute]; // Remove route from the list
             if (shipHealth <= 0) {
                 minigameResult = `Mission failed... Ship destroyed. GAME OVER.`;
-                delete destinations[currentDestination]; // Remove from list
-                hasStartedJourney = false;
-                gameState = "idle";
-                history.push(minigameResult);
+                gameState = "game_over"; // Transition to game over screen
             } else {
                 minigameResult = `Mission failed... -1 Health. Remaining: ${shipHealth}`;
                 gameState = "terminal";
-                history.push(minigameResult);
             }
+            history.push(minigameResult);
         }
         
         drawScreen();
     }
 });
+
+
+function drawGameWinScreen() {
+    ctx.fillStyle = "rgb(0, 255, 0)";
+    ctx.font = "24px monospace";
+    ctx.fillText("Game Win!", canvas.width / 2 - 50, canvas.height / 2 - 40);
+    ctx.font = "16px monospace";
+    ctx.fillText("Press 'R' to Restart", canvas.width / 2 - 80, canvas.height / 2);
+
+    document.addEventListener("keydown", restartGame);
+}
+
+function drawGameOverScreen() {
+    ctx.fillStyle = "rgb(0, 255, 0)";
+    ctx.font = "24px monospace";
+    ctx.fillText("GAME OVER", canvas.width / 2 - 60, canvas.height / 2 - 40);
+    ctx.font = "16px monospace";
+    ctx.fillText("Press 'R' to Restart", canvas.width / 2 - 80, canvas.height / 2);
+
+    document.addEventListener("keydown", restartGame);
+}
+
+function restartGame(event) {
+    if (event.key === "r") {
+        resetGameState();
+        document.removeEventListener("keydown", restartGame); // Remove listener to prevent duplicates
+    }
+}
 
 
 // Initial draw
