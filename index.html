@@ -1,10 +1,67 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Game Project Title Goes Here</title>
-  
+    <title>CyberTyper</title>
+    <style>
+        body {
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .game-container {
+            position: relative;
+        }
+
+        canvas {
+            background: black;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            image-rendering: pixelated;
+        }
+
+        /* Pip-Boy Flicker Effect */
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.98; }
+            100% { opacity: 1; }
+        }
+
+        .flicker-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 255, 0, 0.02);
+            animation: flicker 0.2s infinite alternate;
+            pointer-events: none;
+            border-radius: 10px;
+        }
+
+        /* Screen lines effect */
+        .scan-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                    to bottom,
+                    rgba(0, 0, 0, 0) 50%,
+                    rgba(0, 0, 0, 0.2) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            opacity: 0.2;
+            border-radius: 10px;
+        }
+    </style>
     <script type="text/javascript" src="./assetmanager.js"></script>
     <script type="text/javascript" src="./timer.js"></script>
     <script type="text/javascript" src="./gameengine.js"></script>
@@ -13,6 +70,10 @@
     <script type="text/javascript" src="./main.js"></script>
 </head>
 <body>
-    <canvas id="gameWorld" width="1024" height="768" style="background: white; border: 1px solid black" tabindex="0" autofocus></canvas>
+<div class="game-container">
+    <canvas id="gameWorld" width="1024" height="768" tabindex="0" autofocus></canvas>
+    <div class="flicker-overlay"></div>
+    <div class="scan-lines"></div>
+</div>
 </body>
 </html>
