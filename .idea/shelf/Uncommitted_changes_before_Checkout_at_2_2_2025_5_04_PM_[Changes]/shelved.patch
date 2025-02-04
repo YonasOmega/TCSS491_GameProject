@@ -1,0 +1,19 @@
+Index: index.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\r\n<!DOCTYPE html>\r\n<html>\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <title>Game Project Title Goes Here</title>\r\n  \r\n    <script type=\"text/javascript\" src=\"./assetmanager.js\"></script>\r\n    <script type=\"text/javascript\" src=\"./timer.js\"></script>\r\n    <script type=\"text/javascript\" src=\"./gameengine.js\"></script>\r\n    <script type=\"text/javascript\" src=\"./util.js\"></script>\r\n    <script type=\"text/javascript\" src=\"./typinggame.js\"></script>\r\n    <script type=\"text/javascript\" src=\"./main.js\"></script>\r\n</head>\r\n<body>\r\n    <canvas id=\"gameWorld\" width=\"1024\" height=\"768\" style=\"background: white; border: 1px solid black\" tabindex=\"0\" autofocus></canvas>\r\n</body>\r\n</html>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/index.html b/index.html
+--- a/index.html	(revision a1a3a2f77aa526ae905a2a3261fbe5d936be2d85)
++++ b/index.html	(date 1738544476197)
+@@ -4,7 +4,7 @@
+ <head>
+     <meta charset="utf-8">
+     <title>Game Project Title Goes Here</title>
+-  
++
+     <script type="text/javascript" src="./assetmanager.js"></script>
+     <script type="text/javascript" src="./timer.js"></script>
+     <script type="text/javascript" src="./gameengine.js"></script>
