@@ -1,5 +1,6 @@
 let totalDistance = 200; // The total distance required to reach the destination
 let distanceLeft = totalDistance; // Tracks the remaining distance
+let currentRoute = null;
 
 let routes = {
     "5-Distance": 5,
@@ -32,6 +33,10 @@ function handleCommand(command) {
     else if (lowerCommand === "status") {
         return `Health: ${shipHealth} | Distance Left: ${distanceLeft}`;
     } 
+
+    else if (lowerCommand === "asteroid") {
+        return ["Starting asteroid minigame...", "start_asteroid"];
+    }
     
     else if (lowerCommand.startsWith("travel ")) {
         let route = command.split(" ")[1];

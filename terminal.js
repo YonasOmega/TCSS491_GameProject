@@ -131,9 +131,12 @@ function processCommand(command) {
             gameState = "game_win";
         } else if (state === "start_minigame") {
             gameState = "minigame";
+        } else if (state === "start_asteroid") {
+            // Instead of setting gameState directly here, call the start function
+            startAsteroidGame();
         }
     } else {
-        if (command.toLowerCase() !== "clear") {  // Prevent pushing empty responses after clear
+        if (command.toLowerCase() !== "clear") {
             history.push(response);
         }
     }
@@ -154,6 +157,9 @@ function drawScreen() {
         drawTerminal();
     } else if (gameState === "minigame") {
         drawMinigameScreen();
+    } else if (gameState === "asteroids") {
+        // Call the drawing function from asteroids.js
+        drawAsteroidsGameScreen();
     } else if (gameState === "game_win") {
         drawGameWinScreen();
     } else if (gameState === "game_over") {
@@ -162,6 +168,7 @@ function drawScreen() {
 
     drawScanline();
 }
+
 
 // Draw idle state (outside terminal)
 function drawIdleScreen() {
