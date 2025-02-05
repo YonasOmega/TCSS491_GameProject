@@ -1,31 +1,80 @@
+/* Reset default margins and ensure full-screen layout */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    background: black;
+    background-color: black; /* Space-like background */
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
+    overflow: hidden; /* Prevent scrolling */
+    position: relative;
+    font-family: 'Courier New', monospace; /* Retro terminal font */
 }
 
-canvas {
-    background: black; /* Ensures canvas is black */
+/* Center the Canvas with glowing effects */
+#terminalCanvas {
+    background: black;
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-    image-rendering: pixelated;
+    border: 4px solid rgba(0, 255, 0, 0.3); /* Neon green border */
+    box-shadow: 0 0 40px rgba(0, 255, 0, 0.5), inset 0 0 20px rgba(0, 255, 0, 0.2); /* Outer and inner glow */
+    image-rendering: pixelated; /* Pixelated effect for retro feel */
 }
 
-/* Pip-Boy Flicker Effect */
+/* Starfield Background Effect */
+body::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 0%, black 100%), 
+                url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+    opacity: 0.1;
+    z-index: -2; /* Behind everything */
+    animation: moveStars 50s linear infinite; /* Slow-moving star effect */
+}
+
+/* Moving Stars Animation */
+@keyframes moveStars {
+    from { background-position: 0 0; }
+    to { background-position: 1000px 1000px; }
+}
+
+/* CRT Scanlines Effect */
+body::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.05) 50%, 
+        rgba(0, 0, 0, 0.2) 50%
+    );
+    background-size: 100% 4px; /* Size of the scanlines */
+    opacity: 0.2;
+    z-index: 1; /* Just above the canvas for overlay effect */
+    pointer-events: none; /* Make sure interactions still work */
+}
+
+/* Flicker Effect for Terminal Glow */
 @keyframes flicker {
-    0% { opacity: 1; }
-    50% { opacity: 0.98; }
-    100% { opacity: 1; }
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 1; }
 }
 
 .flicker {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 255, 0, 0.02);
-    animation: flicker 0.2s infinite alternate;
     pointer-events: none;
+    background: rgba(0, 255, 0, 0.02); /* Very subtle green tint */
+    animation: flicker 0.15s infinite;
 }
