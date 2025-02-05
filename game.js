@@ -37,6 +37,10 @@ function handleCommand(command) {
     else if (lowerCommand === "asteroid") {
         return ["Starting asteroid minigame...", "start_asteroid"];
     }
+
+    else if (lowerCommand === "type") {
+        return ["Starting typing minigame...", "start_typing_game"];
+    }
     
     else if (lowerCommand.startsWith("travel ")) {
         let route = command.split(" ")[1];

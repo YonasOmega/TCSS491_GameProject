@@ -134,6 +134,8 @@ function processCommand(command) {
         } else if (state === "start_asteroid") {
             // Instead of setting gameState directly here, call the start function
             startAsteroidGame();
+        } else if (state === "start_typing_game") {
+            startTypingGame(); // Call the function defined in typingGame.js
         }
     } else {
         if (command.toLowerCase() !== "clear") {
