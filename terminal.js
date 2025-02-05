@@ -117,20 +117,25 @@ function handleTerminalInput(event) {
 
 // Process commands
 function processCommand(command) {
-    history.push("> " + command);
+    if (command.toLowerCase() !== "clear") {
+        history.push("> " + command);
+    }
+
     let response = handleCommand(command);
     
-    if (Array.isArray(response)) { // If handleCommand returns multiple values
+    if (Array.isArray(response)) {
         let [message, state] = response;
         history.push(message);
 
         if (state === "game_win") {
-            gameState = "game_win"; // Transition to the win screen
+            gameState = "game_win";
         } else if (state === "start_minigame") {
             gameState = "minigame";
         }
     } else {
-        history.push(response);
+        if (command.toLowerCase() !== "clear") {  // Prevent pushing empty responses after clear
+            history.push(response);
+        }
     }
 
     if (history.length > maxLines) history.shift();
@@ -169,17 +174,22 @@ function drawTerminal() {
     ctx.fillStyle = "rgb(0, 255, 0)";
     let padding = 10;
     let maxWidth = canvas.width - (padding * 2);
-    let y = 20; // Always start at the top
+    let y = 20;
 
-    for (let line of history) {
-        let wrappedLines = wrapText(line, maxWidth, ctx.font);
-        for (let wrappedLine of wrappedLines) {
-            ctx.fillText(wrappedLine, padding, y);
-            y += 20; // Correctly move down for each history line
+    if (history.length > 0) {
+        for (let line of history) {
+            let wrappedLines = wrapText(line, maxWidth, ctx.font);
+            for (let wrappedLine of wrappedLines) {
+                ctx.fillText(wrappedLine, padding, y);
+                y += 20;
+            }
         }
     }
 
-    // ✅ DO NOT manually reset y here; let history determine placement
+    // Always reset cursor to the top when history is cleared
+    if (history.length === 0) {
+        y = 20;
+    }
 
     let cursor = showCursor ? "_" : " ";
     ctx.fillText("> " + input + cursor, padding, y);
