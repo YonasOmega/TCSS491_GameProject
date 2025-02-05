@@ -186,13 +186,21 @@ function drawTerminal() {
         }
     }
 
-    // Always reset cursor to the top when history is cleared
     if (history.length === 0) {
         y = 20;
     }
 
-    let cursor = showCursor ? "_" : " ";
-    ctx.fillText("> " + input + cursor, padding, y);
+    // Calculate the width of the text up to the cursor position
+    const textBeforeCursor = input.slice(0, cursorPosition);
+    const cursorX = ctx.measureText("> " + textBeforeCursor).width + padding;
+
+    // Draw the input text
+    ctx.fillText("> " + input, padding, y);
+
+    // Draw the cursor at the correct position
+    if (showCursor) {
+        ctx.fillText("_", cursorX, y);  // Cursor rendered where it should be
+    }
 }
 
 
