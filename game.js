@@ -11,7 +11,9 @@ let routes = {
     "75-Distance": 75,
     "100-Distance": 100,
     "150-Distance": 150,
-    "200-Distance": 200
+    "200-Distance": 200,
+    "asteroid": 100,
+    "type": 100
 };
 let shipHealth = 3;
 let hasStartedJourney = false;
