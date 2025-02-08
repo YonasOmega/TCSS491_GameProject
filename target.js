@@ -8,30 +8,16 @@ class Target {
         this.maxRadius = 30;
         this.minRadius = 1;
         this.currentRadius = this.minRadius;
-        this.growthRate = 0.15;
+        this.growthRate = 0.15; // Reduced growth rate for slower animation
         this.growing = true;
 
         // Game properties
         this.removeFromWorld = false;
         this.cometImage = ASSET_MANAGER.getAsset("./comet.png");
-        this.explosionImage = ASSET_MANAGER.getAsset("./explosion.gif");
         this.scored = false;
-
-        // Explosion properties
-        this.exploding = false;
-        this.explosionTimer = 0;
-        this.explosionDuration = 30; // frames the explosion will last
     }
 
     update() {
-        if (this.exploding) {
-            this.explosionTimer++;
-            if (this.explosionTimer >= this.explosionDuration) {
-                this.removeFromWorld = true;
-            }
-            return;
-        }
-
         // Handle size animation
         if (this.growing) {
             this.currentRadius += this.growthRate;
@@ -54,25 +40,14 @@ class Target {
             if (!this.scored) {
                 this.game.score++;
                 this.scored = true;
-                this.exploding = true;
-                this.explosionTimer = 0;
             }
+            this.removeFromWorld = true;
             this.game.click = null;
         }
     }
 
     draw(ctx) {
-        if (this.exploding) {
-            // Draw explosion
-            ctx.drawImage(
-                this.explosionImage,
-                this.x - 32, // Adjust these values based on your explosion.gif size
-                this.y - 32,
-                64,         // Adjust based on desired explosion size
-                64
-            );
-        } else if (this.cometImage) {
-            // Draw comet
+        if (this.cometImage) {
             ctx.save();
             ctx.drawImage(
                 this.cometImage,

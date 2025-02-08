@@ -1,5 +1,5 @@
 #gameWorld {
-    background-image: url("./background.png");
+    background-image: url("./matrix.jpg");
     background-size: cover;
     cursor: url("./red_crosshair.png") 16 16, crosshair;
 }
