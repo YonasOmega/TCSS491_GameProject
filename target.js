@@ -3,36 +3,85 @@ class Target {
         this.game = game;
         this.x = x;
         this.y = y;
-        this.radius = 15;
-        this.color = "red";
+
+        // Animation properties
+        this.maxRadius = 30;
+        this.minRadius = 1;
+        this.currentRadius = this.minRadius;
+        this.growthRate = 0.15;
+        this.growing = true;
+
+        // Game properties
         this.removeFromWorld = false;
         this.cometImage = ASSET_MANAGER.getAsset("./comet.png");
-    }
+        this.explosionImage = ASSET_MANAGER.getAsset("./explosion.gif");
+        this.scored = false;
 
-    draw(ctx) {
-        if (this.cometImage) { // Check if image is loaded
-            ctx.drawImage(
-                this.cometImage,
-                this.x - this.radius, // Center the image
-                this.y - this.radius,
-                this.radius * 2,     // Width (double the radius)
-                this.radius * 2      // Height (double the radius)
-            );
-        } else {
-            // Draw a red circle as a fallback if the image hasn't loaded yet
-            ctx.fillStyle = "red";
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-            ctx.fill();
-        }
+        // Explosion properties
+        this.exploding = false;
+        this.explosionTimer = 0;
+        this.explosionDuration = 30; // frames the explosion will last
     }
 
     update() {
+        if (this.exploding) {
+            this.explosionTimer++;
+            if (this.explosionTimer >= this.explosionDuration) {
+                this.removeFromWorld = true;
+            }
+            return;
+        }
+
+        // Handle size animation
+        if (this.growing) {
+            this.currentRadius += this.growthRate;
+            if (this.currentRadius >= this.maxRadius) {
+                this.growing = false;
+            }
+        } else {
+            this.currentRadius -= this.growthRate;
+            if (this.currentRadius <= this.minRadius) {
+                if (!this.scored) {
+                    this.game.lives--;
+                    this.scored = true;
+                }
+                this.removeFromWorld = true;
+            }
+        }
+
+        // Handle click detection
         if (this.game.click && this.isClicked(this.game.click)) {
-            this.removeFromWorld = true;
-            this.game.score++;
-            this.game.createTarget();
-            this.game.click = null; // Important: Reset the click
+            if (!this.scored) {
+                this.game.score++;
+                this.scored = true;
+                this.exploding = true;
+                this.explosionTimer = 0;
+            }
+            this.game.click = null;
+        }
+    }
+
+    draw(ctx) {
+        if (this.exploding) {
+            // Draw explosion
+            ctx.drawImage(
+                this.explosionImage,
+                this.x - 32, // Adjust these values based on your explosion.gif size
+                this.y - 32,
+                64,         // Adjust based on desired explosion size
+                64
+            );
+        } else if (this.cometImage) {
+            // Draw comet
+            ctx.save();
+            ctx.drawImage(
+                this.cometImage,
+                this.x - this.currentRadius,
+                this.y - this.currentRadius,
+                this.currentRadius * 2,
+                this.currentRadius * 2
+            );
+            ctx.restore();
         }
     }
 
@@ -40,6 +89,6 @@ class Target {
         const dx = click.x - this.x;
         const dy = click.y - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        return distance <= this.radius;
+        return distance <= this.currentRadius;
     }
 }
