@@ -14,42 +14,157 @@ ASSET_MANAGER.downloadAll(() => {
     gameEngine.addEntity(gameEngine.xenomorph);
 
     gameEngine.questions = [
+        // EASY QUESTIONS
         {
-            question: "What is the capital of Mars?",
-            answers: ["Ares City", "Olympus", "New Earth"],
-            correctAnswer: "Ares City"
+            question: "What is the closest planet to the Sun?",
+            answers: ["Venus", "Earth", "Mercury"],
+            correctAnswer: "Mercury"
         },
         {
-            question: "What is the largest moon of Saturn?",
-            answers: ["Titan", "Rhea", "Iapetus"],
-            correctAnswer: "Titan"
+            question: "Which planet is known as the Red Planet?",
+            answers: ["Saturn", "Mars", "Venus"],
+            correctAnswer: "Mars"
         },
         {
-            question: "What is the nearest star to our solar system?",
-            answers: ["Proxima Centauri", "Alpha Centauri", "Sirius"],
-            correctAnswer: "Proxima Centauri"
+            question: "What is the name of Earth's natural satellite?",
+            answers: ["Europa", "The Moon", "Titan"],
+            correctAnswer: "The Moon"
         },
         {
-            question: "Which spacecraft first landed humans on the Moon?",
-            answers: ["Apollo 11", "Soyuz 1", "Gemini 3"],
-            correctAnswer: "Apollo 11"
+            question: "What is the largest planet in our solar system?",
+            answers: ["Neptune", "Jupiter", "Saturn"],
+            correctAnswer: "Jupiter"
         },
         {
-            question: "What is the name of SpaceX's first crewed spacecraft?",
-            answers: ["Crew Dragon", "Starship", "Falcon"],
-            correctAnswer: "Crew Dragon"
+            question: "Which planet has the most moons in our solar system?",
+            answers: ["Mars", "Jupiter", "Saturn"],
+            correctAnswer: "Saturn"
         },
         {
-            question: "Which planet is known as the Morning Star?",
-            answers: ["Venus", "Mars", "Mercury"],
+            question: "What is the name of the first human to walk on the Moon?",
+            answers: ["Buzz Aldrin", "Neil Armstrong", "Yuri Gagarin"],
+            correctAnswer: "Neil Armstrong"
+        },
+        {
+            question: "What is the name of the second largest planet in our solar system?",
+            answers: ["Uranus", "Saturn", "Neptune"],
+            correctAnswer: "Saturn"
+        },
+        {
+            question: "Which planet is famous for its beautiful rings?",
+            answers: ["Saturn", "Neptune", "Uranus"],
+            correctAnswer: "Saturn"
+        },
+        {
+            question: "What is the name of the planet that we live on?",
+            answers: ["Earth", "Mars", "Venus"],
+            correctAnswer: "Earth"
+        },
+        {
+            question: "How many planets are there in our solar system?",
+            answers: ["7", "8", "9"],
+            correctAnswer: "8"
+        },
+        {
+            question: "Which planet is known for its beautiful blue color?",
+            answers: ["Neptune", "Earth", "Mars"],
+            correctAnswer: "Neptune"
+        },
+
+        // MEDIUM QUESTIONS
+        {
+            question: "What is the name of the galaxy we live in?",
+            answers: ["Andromeda", "Triangulum", "The Milky Way"],
+            correctAnswer: "The Milky Way"
+        },
+        {
+            question: "Which planet has the longest day in our solar system?",
+            answers: ["Venus", "Mars", "Jupiter"],
             correctAnswer: "Venus"
         },
         {
-            question: "What is the largest known dwarf planet in our solar system?",
-            answers: ["Pluto", "Eris", "Ceres"],
-            correctAnswer: "Pluto"
-        }
+            question: "What is the name of the spacecraft that took humans to the Moon in 1969?",
+            answers: ["Gemini 12", "Discovery", "Apollo 11"],
+            correctAnswer: "Apollo 11"
+        },
+        {
+            question: "What is the largest moon of Jupiter?",
+            answers: ["Io", "Europa", "Ganymede"],
+            correctAnswer: "Ganymede"
+        },
+        {
+            question: "What is the name of the first artificial satellite launched into space?",
+            answers: ["Explorer 1", "Vanguard 1", "Sputnik 1"],
+            correctAnswer: "Sputnik 1"
+        },
+        {
+            question: "Which space mission was the first to land humans on the Moon?",
+            answers: ["Apollo 13", "Apollo 17", "Apollo 11"],
+            correctAnswer: "Apollo 11"
+        },
+        {
+            question: "What is the name of the space agency that launched the Hubble Space Telescope?",
+            answers: ["ESA", "Roscosmos", "NASA"],
+            correctAnswer: "NASA"
+        },
+        {
+            question: "What is the primary composition of Saturn's rings?",
+            answers: ["Rock", "Ice", "Gas"],
+            correctAnswer: "Ice"
+        },
+        // HARD QUESTIONS
+        {
+            question: "Which planet has the largest storm in the solar system, the Great Red Spot?",
+            answers: ["Saturn", "Neptune", "Jupiter"],
+            correctAnswer: "Jupiter"
+        },
+        {
+            question: "What element makes up most of the Sun?",
+            answers: ["Helium", "Oxygen", "Hydrogen"],
+            correctAnswer: "Hydrogen"
+        },
+        {
+            question: "What is the term for a star that has collapsed in on itself, creating a singularity?",
+            answers: ["Neutron star", "White dwarf", "Black hole"],
+            correctAnswer: "Black hole"
+        },
+        {
+            question: "What is the name of the first woman to go to space?",
+            answers: ["Sally Ride", "Mae Jemison", "Valentina Tereshkova"],
+            correctAnswer: "Valentina Tereshkova"
+        },
+        {
+            question: "What was the first country to send a human into space?",
+            answers: ["China", "United States", "Soviet Union"],
+            correctAnswer: "Soviet Union"
+        },
+        {
+            question: "What is the name of the space station that orbits Earth and is a collaboration between NASA, Roscosmos, and others?",
+            answers: ["Space Shuttle Atlantis", "Hubble Space Telescope", "International Space Station (ISS)"],
+            correctAnswer: "International Space Station (ISS)"
+        },
+        {
+            question: "What is the name of the first space probe to reach interstellar space?",
+            answers: ["New Horizons", "Voyager 1", "Parker Solar Probe"],
+            correctAnswer: "Voyager 1"
+        },
+        {
+            question: "What is the term for the region around a black hole from which nothing can escape?",
+            answers: ["Singularity", "Event Horizon", "Accretion disk"],
+            correctAnswer: "Event Horizon"
+        },
+        {
+            question: "Which planet has a moon named Titan, which has lakes of liquid methane?",
+            answers: ["Jupiter", "Uranus", "Saturn"],
+            correctAnswer: "Saturn"
+        },
+        {
+            question: "Which astronomer was the first to use a telescope to observe the night sky?",
+            answers: ["Johannes Kepler", "Isaac Newton", "Galileo Galilei"],
+            correctAnswer: "Galileo Galilei"
+        },
     ];
+
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -63,7 +178,7 @@ ASSET_MANAGER.downloadAll(() => {
     gameEngine.score = 0;
     gameEngine.wrongAnswers = 0;
     gameEngine.gameOver = false;
-    gameEngine.questionTimer = 5; //TIMERR
+    gameEngine.questionTimer = 8; //TIMERR
     gameEngine.currentTime = gameEngine.questionTimer;
     gameEngine.lastTimestamp = 0;
 
@@ -181,13 +296,14 @@ ASSET_MANAGER.downloadAll(() => {
         }
 
         gameEngine.currentQuestionIndex++;
-        if (gameEngine.currentQuestionIndex < gameEngine.questions.length) {
+        // Check if we've reached 8 questions
+        if (gameEngine.currentQuestionIndex >= 8) {
+            gameEngine.gameOver = true;
+        } else {
             gameEngine.currentQuestion = gameEngine.questions[gameEngine.currentQuestionIndex];
             gameEngine.currentTime = gameEngine.questionTimer;
             gameEngine.lastTimestamp = performance.now();
             createAnswerButtons();
-        } else {
-            gameEngine.gameOver = true;
         }
     }
 
@@ -212,10 +328,10 @@ ASSET_MANAGER.downloadAll(() => {
             const timeLeft = Math.max(0, Math.ceil(this.currentTime));
             timerDisplay.textContent = `Time: ${timeLeft}s`;
 
-            if (timeLeft <= 1.9) {
+            if (timeLeft <= 2.5) {
                 timerDisplay.style.color = '#ff0000';
                 timerDisplay.style.textShadow = '0 0 10px #ff0000';
-            } else if (timeLeft <= 3.9) {
+            } else if (timeLeft <= 5.8) {
                 timerDisplay.style.color = '#ff9900';
                 timerDisplay.style.textShadow = '0 0 10px #ff9900';
             } else {
