@@ -20,7 +20,7 @@ let routes = {
     "breakout" :100
 };
 
-// ✅ Command Processing
+// Command Processing
 function handleCommand(command) {
     const lowerCommand = command.toLowerCase();
 
@@ -62,11 +62,11 @@ function handleCommand(command) {
     } 
     
     else if (lowerCommand === "clear") {
-        return "clear_screen"; // ✅ Flag for Terminal to clear history
+        return "clear_screen"; // Flag for Terminal to clear history
     }
     
     else if (lowerCommand === "exit") {
-        return "exit_terminal"; // ✅ Flag for Terminal to exit
+        return "exit_terminal"; // Flag for Terminal to exit
     } 
     
     else if (lowerCommand === "restart") {
@@ -79,7 +79,7 @@ function handleCommand(command) {
     }
 }
 
-// ✅ Reset Game State (Now Exported)
+// Reset Game State (Now Exported)
 function resetGameState() {
     shipHealth = 3;
     distanceLeft = totalDistance;
@@ -102,5 +102,5 @@ function resetGameState() {
     };
 }
 
-// ✅ Exports for ES Modules
+// Exports for ES Modules
 export { handleCommand, resetGameState };
