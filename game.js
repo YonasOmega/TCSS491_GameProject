@@ -16,6 +16,7 @@ let routes = {
 let shipHealth = 3;
 let hasStartedJourney = false;
 
+// Move to commandHandler
 // Command Processing
 function handleCommand(command) {
     const lowerCommand = command.toLowerCase();
