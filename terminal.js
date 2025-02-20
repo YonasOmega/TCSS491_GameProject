@@ -63,10 +63,11 @@ class Terminal {
             let [message, state] = response;
             this.history.push(message);
 
-            if (state === "game_win") {
-                this.gameState = "game_win";
-            } else if (state === "start_minigame") {
-                this.gameState = "minigame";
+            // ✅ Handle minigame starts properly
+            if (state === "start_typing_game") {
+                this.game.startTypingGame(); // ✅ Trigger Typing Game
+            } else if (state === "start_asteroid") {
+                console.log("🚀 Asteroid minigame trigger (not yet implemented)"); // 🚀 Placeholder for future asteroid game
             }
         } else {
             if (response === "clear_screen") {

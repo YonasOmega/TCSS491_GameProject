@@ -1,3 +1,6 @@
+import { Timer } from "./timer.js";
+import { TypingGame } from "./typingGame.js"; // ✅ Import TypingGame
+
 class GameEngine {
     constructor(options) {
         this.ctx = null; // Rendering context
@@ -6,9 +9,9 @@ class GameEngine {
         this.mouse = null;
         this.wheel = null;
         this.keys = {}; // Stores key states
-
         this.running = false;
         this.options = options || { debugging: false };
+        this.currentMinigame = null;
     }
 
     init(ctx) {
@@ -70,43 +73,41 @@ class GameEngine {
         this.entities.push(entity);
     }
 
+    // ✅ Start the Typing Minigame
+    startTypingGame() {
+        console.log("🚀 Starting Typing Minigame...");
+        this.currentMinigame = new TypingGame(this);
+    }
+
     draw() {
-        // Clear the canvas
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-        // Draw all entities
-        for (let i = 0; i < this.entities.length; i++) {
-            this.entities[i].draw(this.ctx);
+        if (this.currentMinigame) {
+            console.log("🚀 drawing minigame!")
+            this.currentMinigame.draw(this.ctx);
+        } else {
+            for (let i = 0; i < this.entities.length; i++) {
+                this.entities[i].draw(this.ctx);
+            }
         }
     }
 
     update() {
-        for (let i = 0; i < this.entities.length; i++) {
-            this.entities[i].update();
+        if (this.currentMinigame) {
+            this.currentMinigame.update();
+            console.log("🔄 Updating Typing Minigame...");
+        } else {
+            for (let i = 0; i < this.entities.length; i++) {
+                this.entities[i].update();
+            }
+            this.entities = this.entities.filter((entity) => !entity.removeFromWorld);
         }
-
-        // Remove entities marked for removal
-        this.entities = this.entities.filter((entity) => !entity.removeFromWorld);
     }
 
     loop() {
         this.clockTick = this.timer.tick();
         this.update();
         this.draw();
-    }
-}
-
-// ✅ Ensure Timer is Defined or Imported
-class Timer {
-    constructor() {
-        this.lastTimestamp = performance.now();
-    }
-
-    tick() {
-        let now = performance.now();
-        let delta = now - this.lastTimestamp;
-        this.lastTimestamp = now;
-        return delta / 1000; // Convert ms to seconds
     }
 }
 

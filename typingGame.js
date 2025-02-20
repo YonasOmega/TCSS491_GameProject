@@ -241,3 +241,5 @@ function updateTypingGame() {
     typingGame.draw(ctx);
     requestAnimationFrame(updateTypingGame);
 }
+
+export { TypingGame };

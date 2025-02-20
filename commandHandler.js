@@ -14,7 +14,9 @@ let routes = {
     "75-Distance": 75,
     "100-Distance": 100,
     "150-Distance": 150,
-    "200-Distance": 200
+    "200-Distance": 200,
+    "asteroid": 100,
+    "typing": 100
 };
 
 // ✅ Command Processing
@@ -39,7 +41,7 @@ function handleCommand(command) {
         return ["Starting asteroid minigame...", "start_asteroid"];
     }
 
-    else if (lowerCommand === "type") {
+    else if (lowerCommand === "typing") {
         return ["Starting typing minigame...", "start_typing_game"];
     }
     
