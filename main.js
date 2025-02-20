@@ -1,6 +1,13 @@
-const ASSET_MANAGER = new AssetManager();
+import { GameEngine } from "./gameEngine.js";
+import { Terminal } from "./terminal.js";
+import { handleCommand, resetGameState } from "./commandHandler.js";
 
+// ✅ Get the canvas from index.html
 const canvas = document.getElementById("terminalCanvas");
+if (!canvas) {
+    console.error("❌ ERROR: <canvas id='terminalCanvas'> is missing in index.html!");
+}
+
 const ctx = canvas.getContext("2d");
 
 // ✅ Create game engine
@@ -13,3 +20,5 @@ gameEngine.addEntity(terminal);
 
 // ✅ Start the game loop
 gameEngine.start();
+
+console.log("✅ main.js is running");
