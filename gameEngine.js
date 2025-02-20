@@ -1,5 +1,5 @@
 import { Timer } from "./timer.js";
-import { TypingGame } from "./typingGame.js"; // ✅ Import TypingGame
+import { TypingGame } from "./typingGame.js"; // Import TypingGame
 
 class GameEngine {
     constructor(options) {
@@ -28,7 +28,7 @@ class GameEngine {
         const gameLoop = () => {
             if (this.running) {
                 this.loop();
-                requestAnimationFrame(gameLoop); // ✅ Corrected `requestAnimFrame`
+                requestAnimationFrame(gameLoop); // Corrected `requestAnimFrame`
             }
         };
 
@@ -41,7 +41,7 @@ class GameEngine {
             y: e.clientY - this.ctx.canvas.getBoundingClientRect().top
         });
 
-        // ✅ Mouse Listeners
+        // Mouse Listeners
         this.ctx.canvas.addEventListener("mousemove", (e) => {
             if (this.options.debugging) console.log("MOUSE_MOVE", getXandY(e));
             this.mouse = getXandY(e);
@@ -64,7 +64,7 @@ class GameEngine {
             this.rightclick = getXandY(e);
         });
 
-        // ✅ Keyboard Listeners (Using `window` to prevent canvas focus issues)
+        // Keyboard Listeners (Using `window` to prevent canvas focus issues)
         window.addEventListener("keydown", (event) => (this.keys[event.key] = true));
         window.addEventListener("keyup", (event) => (this.keys[event.key] = false));
     }
@@ -73,7 +73,7 @@ class GameEngine {
         this.entities.push(entity);
     }
 
-    // ✅ Start the Typing Minigame
+    // Start the Typing Minigame
     startTypingGame() {
         console.log("🚀 Starting Typing Minigame...");
         this.currentMinigame = new TypingGame(this);

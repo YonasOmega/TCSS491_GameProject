@@ -63,7 +63,7 @@ class Terminal {
             let [message, state] = response;
             this.history.push(message);
 
-            // ✅ Handle minigame starts properly
+            // Handle minigame starts properly
             if (state === "start_typing_game") {
                 this.game.startTypingGame(); // ✅ Trigger Typing Game
             } else if (state === "start_asteroid") {
@@ -140,5 +140,5 @@ class Terminal {
     }
 }
 
-// ✅ Export the Terminal class for ES Modules
+// Export the Terminal class for ES Modules
 export { Terminal };
