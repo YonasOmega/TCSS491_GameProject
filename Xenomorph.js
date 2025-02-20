@@ -1,7 +1,7 @@
 class Xenomorph {
     constructor(game) {
         this.game = game;
-        this.image = ASSET_MANAGER.getAsset("./xeno.png");
+        this.image = ASSET_MANAGER.getAsset("./Assets/xeno.png");
         this.baseSize = 100;
         this.size = this.baseSize;
         this.x = game.ctx.canvas.width / 2;

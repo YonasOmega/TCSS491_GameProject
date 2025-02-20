@@ -20,8 +20,8 @@ gameEngine.createTarget = function() {
 	this.addEntity(target);
 };
 
-ASSET_MANAGER.queueDownload("./comet.png");
-ASSET_MANAGER.queueDownload("./explosion.gif");
+ASSET_MANAGER.queueDownload("./Assets/comet.png");
+ASSET_MANAGER.queueDownload("./Assets/explosion.gif");
 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");

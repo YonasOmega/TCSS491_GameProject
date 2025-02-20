@@ -13,7 +13,7 @@ class Target {
 
         // Game properties
         this.removeFromWorld = false;
-        this.cometImage = ASSET_MANAGER.getAsset("./comet.png");
+        this.cometImage = ASSET_MANAGER.getAsset("./Assets/comet.png");
         this.scored = false;
     }
 
