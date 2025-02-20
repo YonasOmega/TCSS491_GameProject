@@ -1,5 +1,6 @@
 import { Timer } from "./timer.js";
 import { TypingGame } from "./typingGame.js"; // ✅ Import TypingGame
+import { BreakoutGame} from "./breakout";
 
 class GameEngine {
     constructor(options) {
@@ -79,10 +80,10 @@ class GameEngine {
         this.currentMinigame = new TypingGame(this);
     }
     //  start breakout game
-    startBreakoutGame(){
-
-        console.log(" Starting breakout game...");
-        this.currentMinigame = new Breakout(this);
+    startBreakoutGame() {
+        console.log("🚀 Starting Breakout Minigame...");
+        this.currentMinigame = new BreakoutGame(this);
+        this.currentMinigameType = "breakout";
     }
 
     draw() {

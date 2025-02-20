@@ -97,6 +97,8 @@ function resetGameState() {
         "100-Distance": 100,
         "150-Distance": 150,
         "200-Distance": 200
+
+
     };
 }
 
