@@ -1,6 +1,6 @@
 import { Timer } from "./timer.js";
 import { TypingGame } from "./typingGame.js"; // ✅ Import TypingGame
-import { BreakoutGame} from "./breakout";
+import { BreakoutGame} from "./breakout.js";
 
 class GameEngine {
     constructor(options) {

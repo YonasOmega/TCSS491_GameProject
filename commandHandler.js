@@ -38,7 +38,7 @@ function handleCommand(command) {
         return `Health: ${shipHealth} | Distance Left: ${distanceLeft}`;
     }
     else if (lowerCommand === "breakout") {
-        return ["Starting breakout minigame...", "breakout minigame"];
+        return ["Starting breakout minigame...", "start_breakout"];
 
     }
 

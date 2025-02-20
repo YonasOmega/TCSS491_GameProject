@@ -371,15 +371,15 @@ class BreakoutGame {
 // Terminal integration functions
 let breakoutGame;
 
-function startBreakoutGame() {
-    let game = {
-        clockTick: 1 / 60,
-        ctx: ctx
-    };
-    breakoutGame = new BreakoutGame(game);
-    gameState = "breakout";
-    updateBreakoutGame();
-}
+// function startBreakoutGame() {
+//     let game = {
+//         clockTick: 1 / 60,
+//         ctx: ctx
+//     };
+//     breakoutGame = new BreakoutGame(game);
+//     gameState = "breakout";
+//     updateBreakoutGame();
+// }
 
 function updateBreakoutGame() {
     if (gameState !== "breakout") return;
@@ -398,4 +398,4 @@ function updateBreakoutGame() {
     requestAnimationFrame(updateBreakoutGame);
 }
 
-export { BreakoutGame }
+export { BreakoutGame };
