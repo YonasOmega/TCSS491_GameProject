@@ -16,7 +16,8 @@ let routes = {
     "150-Distance": 150,
     "200-Distance": 200,
     "asteroid": 100,
-    "typing": 100
+    "typing": 100,
+    "breakout" :100
 };
 
 // ✅ Command Processing
@@ -35,7 +36,11 @@ function handleCommand(command) {
     
     else if (lowerCommand === "status") {
         return `Health: ${shipHealth} | Distance Left: ${distanceLeft}`;
-    } 
+    }
+    else if (lowerCommand === "breakout") {
+        return ["Starting breakout minigame...", "breakout minigame"];
+
+    }
 
     else if (lowerCommand === "asteroid") {
         return ["Starting asteroid minigame...", "start_asteroid"];

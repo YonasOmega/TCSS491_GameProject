@@ -78,6 +78,12 @@ class GameEngine {
         console.log("🚀 Starting Typing Minigame...");
         this.currentMinigame = new TypingGame(this);
     }
+    //  start breakout game
+    startBreakoutGame(){
+
+        console.log(" Starting breakout game...");
+        this.currentMinigame = new Breakout(this);
+    }
 
     draw() {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
