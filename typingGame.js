@@ -107,6 +107,16 @@ class TypingGame {
     }
 
     handleKeyPress(event) {
+        // If the game is over or won, only listen for SPACE to return to the terminal
+        if (this.isGameOver || this.hasWon) {
+            if (event.key === " ") {
+                console.log("🎉 Minigame Completed! Showing result screen...");
+                this.game.endMinigame(this.hasWon ? "YOU WIN!" : "GAME OVER");
+            }
+            return;
+        }
+    
+        // Start the game when ENTER is pressed
         if (!this.gameStarted) {
             if (event.key === 'Enter') {
                 this.gameStarted = true;
@@ -115,16 +125,17 @@ class TypingGame {
             }
             return;
         }
-
+    
+        // Debug mode toggle
         if (event.key.length === 1) {
             const input = event.key.toLowerCase();
             const currentTime = Date.now();
-
+    
             if (currentTime - this.debugStartTime > 1000) {
                 this.debugBuffer = "";
             }
             this.debugStartTime = currentTime;
-
+    
             this.debugBuffer += input;
             if (this.debugBuffer.endsWith("uwt")) {
                 this.debugMode = !this.debugMode;
@@ -133,15 +144,16 @@ class TypingGame {
                 this.messageEffect.timer = this.messageEffect.duration;
                 return;
             }
-
+    
             if (this.debugMode) return;
-
+    
+            // Process normal gameplay input
             const gameInput = event.key.toUpperCase();
             this.playerInput += gameInput;
-
+    
             if (gameInput === this.currentSequence[this.playerInput.length - 1]) {
                 this.timeBar = Math.min(30, this.timeBar + this.increaseAmount);
-
+    
                 if (this.playerInput.length === this.currentSequence.length) {
                     this.level++;
                     if (this.level > this.maxLevel) {
@@ -152,7 +164,9 @@ class TypingGame {
                     }
                 }
             }
-        } else if (event.key === 'Enter' && !this.debugMode) {
+        } 
+        // Handle wrong input or incomplete sequence on ENTER press
+        else if (event.key === 'Enter' && !this.debugMode) {
             const hasWrongInput = this.playerInput !== this.currentSequence.substring(0, this.playerInput.length);
             if (this.playerInput.length !== this.currentSequence.length || hasWrongInput) {
                 this.timeBar = Math.max(0, this.timeBar - this.wrongPenalty);
@@ -164,6 +178,7 @@ class TypingGame {
             }
         }
     }
+        
     initVictoryParticles() {
         for (let i = 0; i < 50; i++) {
             this.addVictoryParticle();
@@ -195,10 +210,15 @@ class TypingGame {
 
     update() {
         this.updateGlitchEffect();
-
-        if (this.gameStarted && !this.isGameOver && !this.hasWon && !this.debugMode) {
+    
+        if (this.isGameOver || this.hasWon) {
+            // Stop all gameplay updates, waiting for user to press SPACE
+            return;
+        }
+    
+        if (this.gameStarted && !this.debugMode) {
             this.timeBar -= this.decreaseRate * this.game.clockTick;
-
+    
             if (this.messageEffect.active) {
                 this.messageEffect.timer -= this.game.clockTick;
                 if (this.messageEffect.timer <= 0) {
@@ -206,14 +226,13 @@ class TypingGame {
                     this.messageEffect.timer = this.messageEffect.duration;
                 }
             }
-
+    
             if (this.timeBar <= 0) {
                 this.isGameOver = true;
                 this.timeBar = 0;
-                gameState = "game_over";  // Communicate with terminal
             }
         }
-
+    
         if (this.hasWon) {
             this.victoryTime += this.game.clockTick;
             for (let i = this.particles.length - 1; i >= 0; i--) {
@@ -225,12 +244,8 @@ class TypingGame {
             if (this.victoryTime % 0.1 < this.game.clockTick) {
                 this.addVictoryParticle();
             }
-            if (!this.gameWinReported) {
-                gameState = "game_win";  // Communicate with terminal
-                this.gameWinReported = true;
-            }
         }
-    }
+    }    
 
     drawMessageEffect(ctx) {
         if (this.messageEffect.active) {

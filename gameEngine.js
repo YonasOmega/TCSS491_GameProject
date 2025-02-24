@@ -1,6 +1,8 @@
 import { Timer } from "./timer.js";
 import { TypingGame } from "./typingGame.js"; // Import TypingGame
 import { BreakoutGame} from "./breakout.js";
+import { Terminal } from "./terminal.js";
+import { GameOverScreen } from "./gameOverScreen.js"
 
 class GameEngine {
     constructor(options) {
@@ -29,12 +31,44 @@ class GameEngine {
         const gameLoop = () => {
             if (this.running) {
                 this.loop();
-                requestAnimationFrame(gameLoop); // ✅ Corrected `requestAnimFrame`
+                requestAnimationFrame(gameLoop);
             }
         };
 
         gameLoop();
     }
+
+    endMinigame(resultMessage) {
+        console.log("🚀 Minigame Ended, Showing Game Over Screen...");
+    
+        // Remove current minigame reference
+        this.currentMinigame = null;
+        this.currentMinigameType = null;
+    
+        // Clear all entities before showing the result screen
+        this.entities = [];
+    
+        // Show game over screen
+        this.currentGameOverScreen = new GameOverScreen(this, resultMessage);
+        this.addEntity(this.currentGameOverScreen);
+    }
+    
+    endGameOverScreen() {
+        console.log("🔄 Transitioning from Game Over Screen to Terminal...");
+    
+        // Remove the Game Over Screen
+        if (this.currentGameOverScreen) {
+            this.currentGameOverScreen.removeListeners();
+        }
+        this.currentGameOverScreen = null;
+    
+        // Clear canvas before returning to the terminal
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    
+        // Load the Terminal
+        this.addEntity(new Terminal(this));
+    }
+    
 
     startInput() {
         const getXandY = (e) => ({
@@ -44,23 +78,23 @@ class GameEngine {
 
         // Mouse Listeners
         this.ctx.canvas.addEventListener("mousemove", (e) => {
-            if (this.options.debugging) console.log("MOUSE_MOVE", getXandY(e));
+            if (this.options.debugging) //console.log("MOUSE_MOVE", getXandY(e));
             this.mouse = getXandY(e);
         });
 
         this.ctx.canvas.addEventListener("click", (e) => {
-            if (this.options.debugging) console.log("CLICK", getXandY(e));
+            if (this.options.debugging) //console.log("CLICK", getXandY(e));
             this.click = getXandY(e);
         });
 
         this.ctx.canvas.addEventListener("wheel", (e) => {
-            if (this.options.debugging) console.log("WHEEL", getXandY(e), e.wheelDelta);
+            if (this.options.debugging) //console.log("WHEEL", getXandY(e), e.wheelDelta);
             e.preventDefault(); // Prevent scrolling
             this.wheel = e;
         });
 
         this.ctx.canvas.addEventListener("contextmenu", (e) => {
-            if (this.options.debugging) console.log("RIGHT_CLICK", getXandY(e));
+            if (this.options.debugging) //console.log("RIGHT_CLICK", getXandY(e));
             e.preventDefault(); // Prevent context menu
             this.rightclick = getXandY(e);
         });
@@ -79,7 +113,7 @@ class GameEngine {
         console.log("🚀 Starting Typing Minigame...");
         this.currentMinigame = new TypingGame(this);
     }
-    //  start breakout game
+    // Start breakout game
     startBreakoutGame() {
         console.log("🚀 Starting Breakout Minigame...");
         this.currentMinigame = new BreakoutGame(this);
@@ -102,7 +136,6 @@ class GameEngine {
     update() {
         if (this.currentMinigame) {
             this.currentMinigame.update();
-            console.log("🔄 Updating Typing Minigame...");
         } else {
             for (let i = 0; i < this.entities.length; i++) {
                 this.entities[i].update();
