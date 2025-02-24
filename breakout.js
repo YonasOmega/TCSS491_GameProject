@@ -19,7 +19,7 @@ class BreakoutGame {
         // Game state
         this.state = {
             score: 0,
-            balls: 10,
+            balls: 3,
             multiplier: 1,
             bonusActive: false,
             isPlaying: false,
@@ -35,23 +35,24 @@ class BreakoutGame {
                 dx: 0,
                 dy: 0,
                 speed: this.INITIAL_BALL_SPEED,
-                angle: -Math.PI / 4  // Initial angle for aiming
+                angle: -Math.PI / 4
             },
             keys: {
                 left: false,
                 right: false,
                 space: false,
                 minus: false,
-                equals: false,
-                tab: false
+                equals: false
             }
         };
 
-        // Initialize the game
+        // Initialize game elements
         this.initializeBlocks();
         this.resetBall();
 
-        // Bind event listeners
+        // Bind event handlers
+        this.keydownHandler = this.handleKeydown.bind(this);
+        this.keyupHandler = this.handleKeyup.bind(this);
         this.setupInputHandlers();
     }
 
@@ -97,21 +98,9 @@ class BreakoutGame {
             this.state.paddle.x += this.PADDLE_SPEED;
         }
 
-        // Update ball position if not launched
         if (!this.state.isPlaying) {
             this.state.ball.x = this.state.paddle.x + this.PADDLE_WIDTH / 2;
             this.state.ball.y = this.state.paddle.y - this.BALL_RADIUS;
-        }
-    }
-
-    updateBallAim() {
-        if (!this.state.isPlaying) {
-            if (this.state.keys.minus) {
-                this.state.ball.angle = Math.max(this.state.ball.angle - 0.05, -Math.PI * 0.8);
-            }
-            if (this.state.keys.equals) {
-                this.state.ball.angle = Math.min(this.state.ball.angle + 0.05, -Math.PI * 0.2);
-            }
         }
     }
 
@@ -134,7 +123,6 @@ class BreakoutGame {
                 this.state.score += 100 * this.state.multiplier;
                 this.state.ball.speed += this.SPEED_INCREMENT;
 
-                // Determine bounce direction
                 if (closest.x === block.x || closest.x === block.x + block.width) {
                     this.state.ball.dx *= -1;
                 }
@@ -143,259 +131,92 @@ class BreakoutGame {
                 }
             }
         }
+
+        if (this.state.blocks.every(block => !block.active)) {
+            this.game.endMinigame("You won Breakout!");
+        }
     }
 
     checkCollisions() {
-        // Wall collisions
-        if (this.state.ball.x - this.BALL_RADIUS <= 0 ||
-            this.state.ball.x + this.BALL_RADIUS >= this.ctx.canvas.width) {
+        if (this.state.ball.x - this.BALL_RADIUS <= 0 || this.state.ball.x + this.BALL_RADIUS >= this.ctx.canvas.width) {
             this.state.ball.dx *= -1;
         }
         if (this.state.ball.y - this.BALL_RADIUS <= 0) {
             this.state.ball.dy *= -1;
         }
 
-        // Paddle collision
         if (this.state.ball.y + this.BALL_RADIUS >= this.state.paddle.y &&
-            this.state.ball.y - this.BALL_RADIUS <= this.state.paddle.y + this.PADDLE_HEIGHT &&
             this.state.ball.x >= this.state.paddle.x &&
             this.state.ball.x <= this.state.paddle.x + this.PADDLE_WIDTH) {
-
             const hitPosition = (this.state.ball.x - this.state.paddle.x) / this.PADDLE_WIDTH;
-            const angle = -Math.PI/2 + (hitPosition - 0.5) * Math.PI * 0.7;
-
+            const angle = -Math.PI / 2 + (hitPosition - 0.5) * Math.PI * 0.7;
             this.state.ball.dx = this.state.ball.speed * Math.cos(angle);
             this.state.ball.dy = this.state.ball.speed * Math.sin(angle);
         }
 
-        // Ball out of bounds
         if (this.state.ball.y + this.BALL_RADIUS > this.ctx.canvas.height) {
             this.state.balls--;
             if (this.state.balls <= 0) {
                 this.state.gameOver = true;
-                gameState = "game_over"; // Communicate with terminal
+                this.game.endMinigame("You lost Breakout!");
             } else {
                 this.resetBall();
             }
         }
     }
 
-    drawBlocks() {
-        for (let block of this.state.blocks) {
-            if (block.active) {
-                this.ctx.beginPath();
-                this.ctx.arc(
-                    block.x + block.width / 2,
-                    block.y + block.height / 2,
-                    5,
-                    0,
-                    Math.PI * 2
-                );
-                this.ctx.fillStyle = '#0F0';
-                this.ctx.fill();
-                this.ctx.closePath();
-            }
-        }
-    }
-
-    drawPaddle() {
-        this.ctx.fillStyle = '#0F0';
-        this.ctx.fillRect(
-            this.state.paddle.x,
-            this.state.paddle.y,
-            this.PADDLE_WIDTH,
-            this.PADDLE_HEIGHT
-        );
-    }
-
-    drawBall() {
-        this.ctx.beginPath();
-        this.ctx.arc(
-            this.state.ball.x,
-            this.state.ball.y,
-            this.BALL_RADIUS,
-            0,
-            Math.PI * 2
-        );
-        this.ctx.fillStyle = '#0F0';
-        this.ctx.fill();
-        this.ctx.closePath();
-
-        // Draw aim line when not playing
-        if (!this.state.isPlaying) {
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.state.ball.x, this.state.ball.y);
-            this.ctx.lineTo(
-                this.state.ball.x + Math.cos(this.state.ball.angle) * 50,
-                this.state.ball.y + Math.sin(this.state.ball.angle) * 50
-            );
-            this.ctx.strokeStyle = '#0F0';
-            this.ctx.stroke();
-            this.ctx.closePath();
-        }
-    }
-
-    drawUI() {
-        this.ctx.fillStyle = '#0F0';
-        this.ctx.font = '20px monospace';
-
-        // Score
-        this.ctx.textAlign = 'right';
-        this.ctx.fillText(
-            `SCORE: ${this.state.score.toString().padStart(6, '0')}`,
-            this.ctx.canvas.width - 20,
-            30
-        );
-
-        // Balls
-        this.ctx.textAlign = 'left';
-        this.ctx.fillText(`BALLS: ${this.state.balls}`, 20, 30);
-
-        // Multiplier
-        this.ctx.fillText(`MULTIPLIER: x${this.state.multiplier}`, 20, 60);
-
-        // Bonus status
-        this.ctx.fillText(
-            `BONUS ${this.state.bonusActive ? 'ACTIVE' : 'INACTIVE'}`,
-            20,
-            90
-        );
-
-        // Controls
-        this.ctx.textAlign = 'right';
-        this.ctx.fillText('[SPACE] LAUNCH', this.ctx.canvas.width - 20, this.ctx.canvas.height - 80);
-        this.ctx.fillText('[-][=] AIM', this.ctx.canvas.width - 20, this.ctx.canvas.height - 50);
-        this.ctx.fillText('[TAB] STATS', this.ctx.canvas.width - 20, this.ctx.canvas.height - 20);
-    }
-
-    drawBorder() {
-        this.ctx.strokeStyle = '#0F0';
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    }
-
     update() {
         if (this.state.isPlaying && !this.state.gameOver) {
-            // Update ball position
             this.state.ball.x += this.state.ball.dx;
             this.state.ball.y += this.state.ball.dy;
-
             this.updatePaddle();
             this.checkCollisions();
             this.checkBlockCollisions();
         } else {
             this.updatePaddle();
-            this.updateBallAim();
         }
     }
 
     draw() {
-        // Clear canvas
-        this.ctx.fillStyle = '#030';
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-        this.drawBorder();
-        this.drawBlocks();
-        this.drawPaddle();
-        this.drawBall();
-        this.drawUI();
+        this.state.blocks.forEach(block => {
+            if (block.active) {
+                this.ctx.fillStyle = '#0F0';
+                this.ctx.fillRect(block.x, block.y, block.width, block.height);
+            }
+        });
 
-        if (this.state.gameOver) {
-            this.ctx.fillStyle = '#0F0';
-            this.ctx.font = '40px monospace';
-            this.ctx.textAlign = 'center';
-            this.ctx.fillText('GAME OVER', this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
-        }
+        this.ctx.fillStyle = '#0F0';
+        this.ctx.fillRect(this.state.paddle.x, this.state.paddle.y, this.PADDLE_WIDTH, this.PADDLE_HEIGHT);
+
+        this.ctx.beginPath();
+        this.ctx.arc(this.state.ball.x, this.state.ball.y, this.BALL_RADIUS, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.closePath();
     }
 
     setupInputHandlers() {
-        document.addEventListener('keydown', (event) => {
-            if (gameState !== "breakout") return;
-
-            switch (event.key.toLowerCase()) {
-                case 'arrowleft':
-                case 'a':
-                    this.state.keys.left = true;
-                    break;
-                case 'arrowright':
-                case 'd':
-                    this.state.keys.right = true;
-                    break;
-                case ' ':
-                    event.preventDefault();
-                    this.state.keys.space = true;
-                    this.launchBall();
-                    break;
-                case '-':
-                    this.state.keys.minus = true;
-                    break;
-                case '=':
-                    this.state.keys.equals = true;
-                    break;
-                case 'tab':
-                    event.preventDefault();
-                    this.state.keys.tab = true;
-                    break;
-            }
-        });
-
-        document.addEventListener('keyup', (event) => {
-            if (gameState !== "breakout") return;
-
-            switch (event.key.toLowerCase()) {
-                case 'arrowleft':
-                case 'a':
-                    this.state.keys.left = false;
-                    break;
-                case 'arrowright':
-                case 'd':
-                    this.state.keys.right = false;
-                    break;
-                case ' ':
-                    this.state.keys.space = false;
-                    break;
-                case '-':
-                    this.state.keys.minus = false;
-                    break;
-                case '=':
-                    this.state.keys.equals = false;
-                    break;
-                case 'tab':
-                    this.state.keys.tab = false;
-                    break;
-            }
-        });
-    }
-}
-
-// Terminal integration functions
-let breakoutGame;
-
-// function startBreakoutGame() {
-//     let game = {
-//         clockTick: 1 / 60,
-//         ctx: ctx
-//     };
-//     breakoutGame = new BreakoutGame(game);
-//     gameState = "breakout";
-//     updateBreakoutGame();
-// }
-
-function updateBreakoutGame() {
-    if (gameState !== "breakout") return;
-
-    breakoutGame.update();
-    breakoutGame.draw();
-
-    // Check if all blocks are destroyed
-    const remainingBlocks = breakoutGame.state.blocks.filter(block => block.active).length;
-    if (remainingBlocks === 0) {
-        gameState = "game_win";
-        history.push("Successfully completed the breakout challenge!");
-        return;
+        document.addEventListener('keydown', this.keydownHandler);
+        document.addEventListener('keyup', this.keyupHandler);
     }
 
-    requestAnimationFrame(updateBreakoutGame);
+    handleKeydown(event) {
+        if (this.game.currentMinigameType !== "breakout") return;
+        if (event.key === 'ArrowLeft' || event.key === 'a') this.state.keys.left = true;
+        if (event.key === 'ArrowRight' || event.key === 'd') this.state.keys.right = true;
+        if (event.key === ' ') this.launchBall();
+    }
+
+    handleKeyup(event) {
+        if (event.key === 'ArrowLeft' || event.key === 'a') this.state.keys.left = false;
+        if (event.key === 'ArrowRight' || event.key === 'd') this.state.keys.right = false;
+    }
+
+    removeListeners() {
+        document.removeEventListener('keydown', this.keydownHandler);
+        document.removeEventListener('keyup', this.keyupHandler);
+    }
 }
 
 export { BreakoutGame };
