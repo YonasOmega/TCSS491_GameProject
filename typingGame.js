@@ -59,9 +59,12 @@ class TypingGame {
         };
 
         // Set up event listener
-        document.addEventListener("keydown", (event) => {
-            if (!this.isGameOver && !this.hasWon) this.handleKeyPress(event);
-        });
+        // document.addEventListener("keydown", (event) => {
+        //     if (!this.isGameOver && !this.hasWon) this.handleKeyPress(event);
+        // });
+        // Store key listener for later removal
+        this.keyListener = (event) => this.handleKeyPress(event);
+        window.addEventListener("keydown", this.keyListener);
     }
 
     generateNewSequence() {
@@ -109,8 +112,10 @@ class TypingGame {
     handleKeyPress(event) {
         // If the game is over or won, only listen for SPACE to return to the terminal
         if (this.isGameOver || this.hasWon) {
+            console.log(`🔹 Key Pressed During Game Over: ${event.key}`); // Debug keypress
+    
             if (event.key === " ") {
-                console.log("🎉 Minigame Completed! Showing result screen...");
+                console.log("🎉 SPACE detected! Ending minigame and showing Game Over Screen...");
                 this.game.endMinigame(this.hasWon ? "YOU WIN!" : "GAME OVER");
             }
             return;
@@ -208,12 +213,17 @@ class TypingGame {
         }
     }
 
+    removeListeners() {
+        console.log("🛑 Removing key event listeners...");
+        window.removeEventListener("keydown", this.keyListener);
+    }
+
     update() {
         this.updateGlitchEffect();
     
         if (this.isGameOver || this.hasWon) {
-            // Stop all gameplay updates, waiting for user to press SPACE
-            return;
+            console.log("⏳ Waiting for SPACE to continue..."); // Debug log
+            return; // Stop updating game logic, but still process key input
         }
     
         if (this.gameStarted && !this.debugMode) {
@@ -228,6 +238,7 @@ class TypingGame {
             }
     
             if (this.timeBar <= 0) {
+                console.log("🚨 Time ran out! Game Over triggered.");
                 this.isGameOver = true;
                 this.timeBar = 0;
             }

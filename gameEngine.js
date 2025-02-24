@@ -40,6 +40,10 @@ class GameEngine {
 
     endMinigame(resultMessage) {
         console.log("🚀 Minigame Ended, Showing Game Over Screen...");
+
+        if (this.currentMinigame) {
+            this.currentMinigame.removeListeners(); // Properly remove key events
+        }
     
         // Remove current minigame reference
         this.currentMinigame = null;
