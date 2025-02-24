@@ -60,18 +60,26 @@ class GameEngine {
     endGameOverScreen() {
         console.log("🔄 Transitioning from Game Over Screen to Terminal...");
     
-        // Remove the Game Over Screen
+        // ✅ Remove the Game Over Screen
         if (this.currentGameOverScreen) {
             this.currentGameOverScreen.removeListeners();
         }
         this.currentGameOverScreen = null;
     
-        // Clear canvas before returning to the terminal
-        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        // ✅ Remove old Terminal instance before creating a new one
+        if (this.currentTerminal) {
+            this.currentTerminal.removeListeners();
+        }
     
-        // Load the Terminal
-        this.addEntity(new Terminal(this));
+        // ✅ Clear canvas before returning to the terminal
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.entities = [];
+    
+        // ✅ Create a new Terminal instance and store it
+        this.currentTerminal = new Terminal(this);
+        this.addEntity(this.currentTerminal);
     }
+    
     
 
     startInput() {

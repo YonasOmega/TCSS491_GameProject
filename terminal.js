@@ -22,16 +22,32 @@ class Terminal {
         this.scanlineY = 0;
         this.gameState = "idle";
 
-        // Cursor blinking effect
-        setInterval(() => {
+        // ✅ Prevent multiple intervals by clearing any existing one
+        if (this.cursorInterval) {
+            clearInterval(this.cursorInterval);
+        }
+
+        // ✅ Properly store interval so it can be cleared later
+        this.cursorInterval = setInterval(() => {
             if (this.gameState === "terminal") {
                 this.showCursor = !this.showCursor;
             }
         }, 500);
 
-        // Listen for keyboard input
-        window.addEventListener("keydown", (event) => this.handleInput(event));
+        // ✅ Listen for keyboard input
+        this.keyListener = (event) => this.handleInput(event);
+        window.addEventListener("keydown", this.keyListener);
     }
+
+    // ✅ Properly remove event listeners and intervals when Terminal is removed
+    removeListeners() {
+        if (this.cursorInterval) {
+            clearInterval(this.cursorInterval);
+            this.cursorInterval = null; // Prevent re-clearing a null interval
+        }
+        window.removeEventListener("keydown", this.keyListener);
+    }
+
 
     handleInput(event) {
         if (this.gameState === "idle" && event.key === "t") {
