@@ -6,12 +6,18 @@ class Terminal {
         this.canvas = document.getElementById("terminalCanvas");
         this.ctx = this.canvas.getContext("2d");
 
-        this.canvas.width = 800;
-        this.canvas.height = 600;
+        // Set canvas to full screen
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
         this.ctx.font = "16px monospace";
         this.ctx.fillStyle = "rgb(0, 255, 0)";
         this.ctx.textBaseline = "top";
 
+        // Define terminal area: bottom third of the canvas
+        this.terminalHeight = this.canvas.height / 3;
+        this.terminalY = this.canvas.height - this.terminalHeight;
+
+        // Terminal state
         this.input = "";
         this.history = [];
         this.commandHistory = [];
@@ -22,32 +28,29 @@ class Terminal {
         this.scanlineY = 0;
         this.gameState = "idle";
 
-        // ✅ Prevent multiple intervals by clearing any existing one
+        // Prevent duplicate intervals
         if (this.cursorInterval) {
             clearInterval(this.cursorInterval);
         }
-
-        // ✅ Properly store interval so it can be cleared later
+        // Set up cursor blinking
         this.cursorInterval = setInterval(() => {
             if (this.gameState === "terminal") {
                 this.showCursor = !this.showCursor;
             }
         }, 500);
 
-        // ✅ Listen for keyboard input
+        // Set up key listener and store it for removal later
         this.keyListener = (event) => this.handleInput(event);
         window.addEventListener("keydown", this.keyListener);
     }
 
-    // ✅ Properly remove event listeners and intervals when Terminal is removed
     removeListeners() {
         if (this.cursorInterval) {
             clearInterval(this.cursorInterval);
-            this.cursorInterval = null; // Prevent re-clearing a null interval
+            this.cursorInterval = null;
         }
         window.removeEventListener("keydown", this.keyListener);
     }
-
 
     handleInput(event) {
         if (this.gameState === "idle" && event.key === "t") {
@@ -78,7 +81,6 @@ class Terminal {
         if (Array.isArray(response)) {
             let [message, state] = response;
             this.history.push(message);
-
             // Handle minigame starts properly
             if (state === "start_typing") {
                 this.game.entities = []; // Remove Terminal
@@ -102,22 +104,24 @@ class Terminal {
     }
 
     update() {
-        // If scanline reaches bottom, reset
+        // Update scanline within the terminal area
         this.scanlineY += 2;
-        if (this.scanlineY > this.canvas.height) {
+        if (this.scanlineY > this.terminalHeight) {
             this.scanlineY = 0;
         }
     }
 
     draw(ctx) {
+        // Draw terminal background in the bottom third
         ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.fillRect(0, this.terminalY, this.canvas.width, this.terminalHeight);
+
         ctx.fillStyle = "rgb(0, 255, 0)";
+        const padding = 10;
+        const maxWidth = this.canvas.width - (padding * 2);
+        let y = this.terminalY + 10;
 
-        let padding = 10;
-        let maxWidth = this.canvas.width - (padding * 2);
-        let y = 20;
-
+        // Draw each line of history with wrapping
         for (let line of this.history) {
             let wrappedLines = this.wrapText(line, maxWidth, ctx.font);
             for (let wrappedLine of wrappedLines) {
@@ -126,15 +130,17 @@ class Terminal {
             }
         }
 
+        // Draw current input with cursor
+        const inputLine = "> " + this.input;
         const cursorX = ctx.measureText("> " + this.input.slice(0, this.cursorPosition)).width + padding;
-        ctx.fillText("> " + this.input, padding, y);
+        ctx.fillText(inputLine, padding, y);
         if (this.showCursor) {
             ctx.fillText("_", cursorX, y);
         }
 
-        // Draw scanline effect
+        // Draw scanline effect in terminal region
         ctx.fillStyle = "rgba(0, 255, 0, 0.1)";
-        ctx.fillRect(0, this.scanlineY, ctx.canvas.width, 2);
+        ctx.fillRect(0, this.terminalY + this.scanlineY, this.canvas.width, 2);
     }
 
     wrapText(text, maxWidth, font) {
@@ -145,7 +151,6 @@ class Terminal {
         for (let word of words) {
             let testLine = line + word + " ";
             let testWidth = this.ctx.measureText(testLine).width;
-
             if (testWidth > maxWidth && line.length > 0) {
                 lines.push(line);
                 line = word + " ";
@@ -153,11 +158,9 @@ class Terminal {
                 line = testLine;
             }
         }
-
         lines.push(line.trim());
         return lines;
     }
 }
 
-// ✅ Export the Terminal class for ES Modules
 export { Terminal };
