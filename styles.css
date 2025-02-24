@@ -19,10 +19,11 @@ body {
 /* Center the Canvas with glowing effects */
 #terminalCanvas {
     background: black;
-    border-radius: 10px;
-    border: 4px solid rgba(0, 255, 0, 0.3); /* Neon green border */
-    box-shadow: 0 0 40px rgba(0, 255, 0, 0.5), inset 0 0 20px rgba(0, 255, 0, 0.2); /* Outer and inner glow */
-    image-rendering: pixelated; /* Pixelated effect for retro feel */
+    /* Remove or adjust these if you don't want rounded corners and glow */
+    /* border-radius: 10px; */
+    /* border: 4px solid rgba(0, 255, 0, 0.3); */
+    /* box-shadow: 0 0 40px rgba(0, 255, 0, 0.5), inset 0 0 20px rgba(0, 255, 0, 0.2); */
+    image-rendering: pixelated;
 }
 
 /* Starfield Background Effect */
