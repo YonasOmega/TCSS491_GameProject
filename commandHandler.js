@@ -17,7 +17,8 @@ let routes = {
     "200-Distance": 200,
     "asteroid": 100,
     "typing": 100,
-    "breakout" :100
+    "breakout": 100,
+    "blasteroid": 100
 };
 
 // Command Processing
@@ -47,7 +48,11 @@ function handleCommand(command) {
     }
 
     else if (lowerCommand === "typing") {
-        return ["Starting typing minigame...", "start_typing_game"];
+        return ["Starting typing minigame...", "start_typing"];
+    }
+
+    else if (lowerCommand === "blasteroid") {
+        return ["Starting blasteroid minigame...", "start_blasteroid"]
     }
     
     else if (lowerCommand.startsWith("travel ")) {

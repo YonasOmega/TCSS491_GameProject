@@ -2,6 +2,7 @@ import { Timer } from "./timer.js";
 import { TypingGame } from "./typingGame.js"; // Import TypingGame
 import { BreakoutGame} from "./breakout.js";
 import { Terminal } from "./terminal.js";
+import { Blasteroid } from "./blasteroid.js";
 import { GameOverScreen } from "./gameOverScreen.js"
 
 class GameEngine {
@@ -124,12 +125,19 @@ class GameEngine {
     startTypingGame() {
         console.log("🚀 Starting Typing Minigame...");
         this.currentMinigame = new TypingGame(this);
+        this.currentMinigameType = ""
     }
     // Start breakout game
     startBreakoutGame() {
         console.log("🚀 Starting Breakout Minigame...");
         this.currentMinigame = new BreakoutGame(this);
         this.currentMinigameType = "breakout";
+    }
+    // Start blasteroid game
+    startBlasteroidGame() {
+        console.log("🚀 Starting Blasteroid Minigame...");
+        this.currentMinigame = new Blasteroid(this);
+        this.currentMinigameType = "blasteroid";
     }
 
     draw() {

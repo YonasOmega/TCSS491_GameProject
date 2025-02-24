@@ -83,8 +83,8 @@ class Terminal {
             if (state === "start_typing_game") {
                 this.game.entities = []; // Remove Terminal
                 this.game.startTypingGame(); // Start Typing Game
-            } else if (state === "start_asteroid") {
-                console.log("🚀 Asteroid minigame trigger (not yet implemented)"); // 🚀 Placeholder for future asteroid game
+            } else if (state === "start_blasteroid") {
+                this.game.startBlasteroidGame();
             } else if (state === "start_breakout") {
                 this.game.startBreakoutGame(); // Trigger breakout game
             }
