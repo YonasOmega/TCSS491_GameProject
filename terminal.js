@@ -80,7 +80,7 @@ class Terminal {
             this.history.push(message);
 
             // Handle minigame starts properly
-            if (state === "start_typing_game") {
+            if (state === "start_typing") {
                 this.game.entities = []; // Remove Terminal
                 this.game.startTypingGame(); // Start Typing Game
             } else if (state === "start_blasteroid") {
