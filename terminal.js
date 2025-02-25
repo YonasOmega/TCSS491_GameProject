@@ -176,13 +176,15 @@ class Terminal {
         if (Array.isArray(response)) {
             let [message, state] = response;
             this.history.push(message);
-            if (state === "start_typing_game") {
+            if (state === "start_typing") {
                 this.game.entities = [];
                 this.game.startTypingGame();
             } else if (state === "start_blasteroid") {
                 this.game.startBlasteroidGame();
             } else if (state === "start_breakout") {
                 this.game.startBreakoutGame();
+            } else if (state === "start_chess") {
+                this.game.startChessGame
             }
         } else {
             if (response === "clear_screen") {

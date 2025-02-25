@@ -18,7 +18,8 @@ let routes = {
     "asteroid": 100,
     "typing": 100,
     "breakout": 100,
-    "blasteroid": 100
+    "blasteroid": 100,
+    "chess": 100
 };
 
 // Command Processing
@@ -57,6 +58,10 @@ function handleCommand(command) {
 
     else if (lowerCommand === "purpose") {
         return "AAAAGGGGHHHH";
+    }
+
+    else if (lowerCommand === "chess") {
+        return ["Starting chess minigame...", "start_chess"];
     }
     
     else if (lowerCommand.startsWith("travel ")) {

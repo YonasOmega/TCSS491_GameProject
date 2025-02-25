@@ -3,6 +3,7 @@ import { TypingGame } from "./typingGame.js"; // Import TypingGame
 import { BreakoutGame} from "./breakout.js";
 import { Terminal } from "./terminal.js";
 import { Blasteroid } from "./blasteroid.js";
+import { ChessGame } from "./chess.js";
 import { GameOverScreen } from "./gameOverScreen.js"
 
 class GameEngine {
@@ -138,6 +139,12 @@ class GameEngine {
         console.log("🚀 Starting Blasteroid Minigame...");
         this.currentMinigame = new Blasteroid(this);
         this.currentMinigameType = "blasteroid";
+    }
+    // Start chess game
+    startChessGame() {
+        console.log("🚀 Starting Chess Minigame...");
+        this.currentMinigame = new ChessGame(this);
+        this.currentMinigameType = "chess";
     }
 
     draw() {
