@@ -26,7 +26,7 @@ function handleCommand(command) {
     const lowerCommand = command.toLowerCase();
 
     if (lowerCommand === "help") {
-        return "Commands: TRAVEL [route], LIST, STATUS, CLEAR, HELP, EXIT, RESTART";
+        return "Commands: PURPOSE, TRAVEL [route], LIST, STATUS, CLEAR, HELP, EXIT, RESTART";
     } 
     
     else if (lowerCommand === "list") {
@@ -52,7 +52,11 @@ function handleCommand(command) {
     }
 
     else if (lowerCommand === "blasteroid") {
-        return ["Starting blasteroid minigame...", "start_blasteroid"]
+        return ["Starting blasteroid minigame...", "start_blasteroid"];
+    }
+
+    else if (lowerCommand === "purpose") {
+        return "AAAAGGGGHHHH";
     }
     
     else if (lowerCommand.startsWith("travel ")) {
