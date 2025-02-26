@@ -190,67 +190,49 @@ class Terminal {
 
     handleInput(event) {
         if (event.key === "Enter") {
-            if (this.gameState === "trial-confirmation") {
-                // Process trial confirmation only once.
-                if (this.trialConfirmed) return;
-                this.trialConfirmed = true;
-
-                const answer = this.input.trim().toLowerCase();
-                if (answer === "y") {
-                    this.history.push(`Starting Trial ${this.game.currentTrial}...`);
-                    if (this.game.startTrial) {
-                        this.game.startTrial(this.game.currentTrial);
-                        this.game.currentTrial++;
-                    }
-                    // Clear input, update state, and remove this Terminal's listener
+            const command = this.input.trim().toLowerCase();
+    
+            // Always allow minigame names and commands
+            if (this.gameState !== "instructions") {
+                let response = handleCommand(command);
+    
+                if (Array.isArray(response) && response[1].startsWith("start_")) {
+                    this.showLoadingBar(() => {
+                        this._processCommandResponse(response);
+                    });
                     this.input = "";
-                    this.cursorPosition = 0;
-                    this.gameState = "terminal";
-                    this.removeListeners();
-                } else if (answer === "n") {
-                    this.history.push("Trial canceled. Awaiting further instructions...");
-                    this.input = "";
-                    this.cursorPosition = 0;
-                    this.gameState = "terminal";
-                    this.removeListeners();
+                    return;
                 } else {
-                    this.history.push("Invalid input. Please type Y or N.");
-                    // Allow re‑entry by resetting the flag.
-                    this.trialConfirmed = false;
+                    this._processCommandResponse(response);
                 }
-                return; // Exit early to prevent further processing
-            } else {
-                this.processCommand(this.input);
-                this.input = "";
-                this.cursorPosition = 0;
             }
+    
+            // Handle trial confirmation
+            if (this.gameState === "trial-confirmation") {
+                if (command === "y") {
+                    this.history.push(`Starting Trial ${this.game.currentTrial}...`);
+                    this.game.startTrial(this.game.currentTrial);
+                    this.game.currentTrial++; // Increment AFTER starting trial
+                    this.gameState = "terminal"; // Exit confirmation mode
+                } else if (command === "n") {
+                    this.history.push("Trial canceled. Awaiting further instructions...");
+                    this.gameState = "terminal"; // Exit confirmation mode
+                } else {
+                    this.history.push("Invalid input. Please type Y, N, or a minigame name.");
+                }
+            }
+    
+            // Clear input and reset cursor
+            this.input = "";
+            this.cursorPosition = 0;
         } else if (event.key === "Backspace") {
             if (this.cursorPosition > 0) {
-                this.input =
-                    this.input.slice(0, this.cursorPosition - 1) +
-                    this.input.slice(this.cursorPosition);
+                this.input = this.input.slice(0, this.cursorPosition - 1) + this.input.slice(this.cursorPosition);
                 this.cursorPosition--;
             }
         } else if (event.key.length === 1) {
-            this.input =
-                this.input.slice(0, this.cursorPosition) +
-                event.key +
-                this.input.slice(this.cursorPosition);
+            this.input = this.input.slice(0, this.cursorPosition) + event.key + this.input.slice(this.cursorPosition);
             this.cursorPosition++;
-        }
-    }
-
-    processCommand(command) {
-        if (command.trim() === "") return;
-        this.history.push("> " + command);
-        let response = handleCommand(command);
-    
-        if (Array.isArray(response) && response[1].startsWith("start_")) {
-            this.showLoadingBar(() => {
-                this._processCommandResponse(response);
-            });
-        } else {
-            this._processCommandResponse(response);
         }
     }
     
