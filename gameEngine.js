@@ -120,7 +120,7 @@ class GameEngine {
             if (this.options.debugging) {
                 //console.log("RIGHT_CLICK", getXandY(e));
             }
-            e.preventDefault();
+            //e.preventDefault();
             this.rightclick = getXandY(e);
         });
 
