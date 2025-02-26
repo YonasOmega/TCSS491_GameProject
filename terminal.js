@@ -35,6 +35,9 @@ class Terminal {
         this.scanlineY = 0;
         this.gameState = "idle";
 
+        // Flag to ensure trial confirmation input is processed only once per prompt.
+        this.trialConfirmed = false;
+
         // If bootup is true, print the full boot‑up and instruction text.
         if (bootup) {
             this.gameInstructions();
@@ -188,27 +191,32 @@ class Terminal {
     handleInput(event) {
         if (event.key === "Enter") {
             if (this.gameState === "trial-confirmation") {
+                // Process trial confirmation only once.
+                if (this.trialConfirmed) return;
+                this.trialConfirmed = true;
+
                 const answer = this.input.trim().toLowerCase();
                 if (answer === "y") {
                     this.history.push(`Starting Trial ${this.game.currentTrial}...`);
                     if (this.game.startTrial) {
-                        // Start trial with the current trial number and then increment it
                         this.game.startTrial(this.game.currentTrial);
                         this.game.currentTrial++;
                     }
-                    // Clear input and switch state only on valid input
+                    // Clear input, update state, and remove this Terminal's listener
                     this.input = "";
                     this.cursorPosition = 0;
                     this.gameState = "terminal";
+                    this.removeListeners();
                 } else if (answer === "n") {
                     this.history.push("Trial canceled. Awaiting further instructions...");
-                    // Clear input and switch state only on valid input
                     this.input = "";
                     this.cursorPosition = 0;
                     this.gameState = "terminal";
+                    this.removeListeners();
                 } else {
                     this.history.push("Invalid input. Please type Y or N.");
-                    // Remain in trial-confirmation state and do not clear input
+                    // Allow re‑entry by resetting the flag.
+                    this.trialConfirmed = false;
                 }
                 return; // Exit early to prevent further processing
             } else {
