@@ -38,9 +38,7 @@ class Terminal {
         if (this.cursorInterval) clearInterval(this.cursorInterval);
         // Set up cursor blinking
         this.cursorInterval = setInterval(() => {
-            if (this.gameState === "terminal") {
-                this.showCursor = !this.showCursor;
-            }
+            this.showCursor = !this.showCursor;
         }, 500);
 
         // Store key listener for removal
@@ -134,29 +132,25 @@ class Terminal {
     }
 
     handleInput(event) {
-        if (this.gameState === "idle" && event.key === "t") {
-            this.gameState = "terminal"; // Enter terminal mode
-        } else if (this.gameState === "terminal") {
-            if (event.key === "Enter") {
-                this.processCommand(this.input);
-                this.input = "";
-                this.cursorPosition = 0;
-            } else if (event.key === "Backspace") {
-                if (this.cursorPosition > 0) {
-                    this.input =
-                        this.input.slice(0, this.cursorPosition - 1) +
-                        this.input.slice(this.cursorPosition);
-                    this.cursorPosition--;
-                }
-            } else if (event.key.length === 1) {
+        if (event.key === "Enter") {
+            this.processCommand(this.input);
+            this.input = "";
+            this.cursorPosition = 0;
+        } else if (event.key === "Backspace") {
+            if (this.cursorPosition > 0) {
                 this.input =
-                    this.input.slice(0, this.cursorPosition) +
-                    event.key +
+                    this.input.slice(0, this.cursorPosition - 1) +
                     this.input.slice(this.cursorPosition);
-                this.cursorPosition++;
+                this.cursorPosition--;
             }
+        } else if (event.key.length === 1) {
+            this.input =
+                this.input.slice(0, this.cursorPosition) +
+                event.key +
+                this.input.slice(this.cursorPosition);
+            this.cursorPosition++;
         }
-    }
+    }    
 
     processCommand(command) {
         if (command.trim() === "") return;
