@@ -244,6 +244,7 @@ class Terminal {
         if (command.trim() === "") return;
         this.history.push("> " + command);
         let response = handleCommand(command);
+    
         if (Array.isArray(response) && response[1].startsWith("start_")) {
             this.showLoadingBar(() => {
                 this._processCommandResponse(response);
@@ -252,22 +253,32 @@ class Terminal {
             this._processCommandResponse(response);
         }
     }
-
+    
     _processCommandResponse(response) {
         if (Array.isArray(response)) {
             let [message, state] = response;
             this.history.push(message);
-            if (state === "start_typing") {
-                this.game.entities = [];
-                this.game.startTypingGame();
-            } else if (state === "start_blasteroid") {
-                this.game.startBlasteroidGame();
-            } else if (state === "start_breakout") {
-                this.game.startBreakoutGame();
-            } else if (state === "start_chess") {
-                this.game.startChessGame();
-            } else if (state === "start_riddle") {
-                this.game.startRiddleGame();
+    
+            // Check if the command corresponds to starting a minigame
+            switch (state) {
+                case "start_typing":
+                    this.game.entities = [];
+                    this.game.startTypingGame();
+                    break;
+                case "start_blasteroid":
+                    this.game.startBlasteroidGame();
+                    break;
+                case "start_breakout":
+                    this.game.startBreakoutGame();
+                    break;
+                case "start_chess":
+                    this.game.startChessGame();
+                    break;
+                case "start_riddle":
+                    this.game.startRiddleGame();
+                    break;
+                default:
+                    console.warn("⚠️ Unknown game start state:", state);
             }
         } else {
             if (response === "clear_screen") {
