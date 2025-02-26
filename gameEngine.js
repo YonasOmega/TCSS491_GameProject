@@ -19,6 +19,7 @@ class GameEngine {
         this.options = options || { debugging: false };
         this.currentMinigame = null;
         this.currentTerminal = null;
+        this.currentTrial = 1; // Track trial number
     }
 
     init(ctx) {
@@ -26,8 +27,8 @@ class GameEngine {
         this.startInput();
         this.timer = new Timer();
         console.log("✅ Game Engine Initialized");
-        // Start with the Terminal instance (which will show boot-up and instructions)
-        this.currentTerminal = new Terminal(this);
+        // Start with the Terminal instance (bootup mode: print full instructions)
+        this.currentTerminal = new Terminal(this, true);
         this.addEntity(this.currentTerminal);
     }
 
@@ -80,8 +81,10 @@ class GameEngine {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         this.entities = [];
     
-        // Create a new Terminal instance and store it
-        this.currentTerminal = new Terminal(this);
+        // Create a new Terminal instance in post‑trial mode (skip bootup instructions)
+        this.currentTerminal = new Terminal(this, false);
+        // Show post‑trial instructions (e.g., prompt for next trial)
+        this.currentTerminal.postTrialInstructions();
         this.addEntity(this.currentTerminal);
     }
     
@@ -122,9 +125,24 @@ class GameEngine {
             this.rightclick = getXandY(e);
         });
 
-        // Keyboard Listeners
+        // Keyboard Listeners for normal input
         window.addEventListener("keydown", (event) => (this.keys[event.key] = true));
         window.addEventListener("keyup", (event) => (this.keys[event.key] = false));
+
+        // Debugging keybinds: Quickly pass or fail a minigame using keys "1" and "2"
+        if (this.options.debugging) {
+            window.addEventListener("keydown", (event) => {
+                if (this.currentMinigame) {
+                    if (event.key === "1") {
+                        console.log("Debug: Simulating minigame success");
+                        this.endMinigame("Trial passed (debug)");
+                    } else if (event.key === "2") {
+                        console.log("Debug: Simulating minigame failure");
+                        this.endMinigame("Trial failed (debug)");
+                    }
+                }
+            });
+        }
     }
 
     addEntity(entity) {
@@ -165,22 +183,33 @@ class GameEngine {
     // New method to start a trial from the Terminal's Y/N prompt.
     startTrial(trialNumber) {
         console.log(`🚀 Starting Trial ${trialNumber}...`);
-        // For example, trial 1 starts the TypingGame.
-        // You can expand this logic to choose different minigames.
-        if (trialNumber === 1) {
-            this.startTypingGame();
-        } else {
-            // Default to TypingGame if no other trial is defined.
-            this.startTypingGame();
+        switch(trialNumber) {
+            case 1:
+                this.startTypingGame();
+                break;
+            case 2:
+                this.startBreakoutGame();
+                break;
+            case 3:
+                this.startBlasteroidGame();
+                break;
+            case 4:
+                this.startChessGame();
+                break;
+            case 5:
+                this.startRiddleGame();
+                break;
+            default:
+                // Default behavior or repeat minigames
+                this.startTypingGame();
         }
-    }
+    }    
 
     draw() {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     
         if (this.currentMinigame) {
             // Draw the active minigame
-            // (Optionally remove the following log for production)
             console.log("🚀 Drawing minigame!");
             this.currentMinigame.draw(this.ctx);
         } else {

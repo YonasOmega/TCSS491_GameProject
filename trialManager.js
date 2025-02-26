@@ -31,3 +31,5 @@ class TrialManager {
         ctx.drawImage(this.planetImage, x, y, planetWidth, planetHeight);
     }
 }
+
+export { TrialManager };

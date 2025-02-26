@@ -1,7 +1,8 @@
 import { handleCommand } from "./commandHandler.js";
 
 class Terminal {
-    constructor(game) {
+    // The optional bootup parameter (default true) controls whether to print full game instructions.
+    constructor(game, bootup = true) {
         this.game = game;
         this.canvas = document.getElementById("terminalCanvas");
         this.ctx = this.canvas.getContext("2d");
@@ -34,8 +35,10 @@ class Terminal {
         this.scanlineY = 0;
         this.gameState = "idle";
 
-        // Initial printing of boot and instruction text.
-        this.gameInstructions();
+        // If bootup is true, print the full boot‑up and instruction text.
+        if (bootup) {
+            this.gameInstructions();
+        }
 
         // Prevent duplicate intervals
         if (this.cursorInterval) clearInterval(this.cursorInterval);
@@ -93,6 +96,13 @@ class Terminal {
             this.gameState = "trial-confirmation";
         }, delay);
     }    
+
+    // New method for prompting next trial after a game ends
+    postTrialInstructions() {
+        this.history.push("Trial completed.");
+        this.history.push("Ready for next trial? [Y/N]");
+        this.gameState = "trial-confirmation";
+    }
 
     // ----- Sidebar Functions -----
     initializeSidebar() {
@@ -180,21 +190,27 @@ class Terminal {
             if (this.gameState === "trial-confirmation") {
                 const answer = this.input.trim().toLowerCase();
                 if (answer === "y") {
-                    this.history.push("Starting Trial 1...");
-                    // Trigger the trial start method on your game object.
+                    this.history.push(`Starting Trial ${this.game.currentTrial}...`);
                     if (this.game.startTrial) {
-                        this.game.startTrial(1);
+                        // Start trial with the current trial number and then increment it
+                        this.game.startTrial(this.game.currentTrial);
+                        this.game.currentTrial++;
                     }
+                    // Clear input and switch state only on valid input
+                    this.input = "";
+                    this.cursorPosition = 0;
+                    this.gameState = "terminal";
                 } else if (answer === "n") {
-                    this.history.push("Trial 1 canceled. Awaiting further instructions...");
-                    // You can add additional handling here if desired.
+                    this.history.push("Trial canceled. Awaiting further instructions...");
+                    // Clear input and switch state only on valid input
+                    this.input = "";
+                    this.cursorPosition = 0;
+                    this.gameState = "terminal";
                 } else {
                     this.history.push("Invalid input. Please type Y or N.");
+                    // Remain in trial-confirmation state and do not clear input
                 }
-                this.input = "";
-                this.cursorPosition = 0;
-                // After handling the trial prompt, revert to normal terminal command processing.
-                this.gameState = "terminal";
+                return; // Exit early to prevent further processing
             } else {
                 this.processCommand(this.input);
                 this.input = "";
