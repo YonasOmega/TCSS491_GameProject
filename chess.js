@@ -138,6 +138,10 @@ class ChessGame {
       ctx.lineWidth = 3;
       ctx.strokeRect(selX, selY, this.squareSize, this.squareSize);
     }
+
+    removeListeners() {
+      return;
+    }
   }
   
   export { ChessGame };  

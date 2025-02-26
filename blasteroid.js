@@ -163,6 +163,10 @@ class Blasteroid {
         const hearts = "❤️".repeat(this.lives);
         ctx.fillText(`Score: ${this.score} | Lives: ${hearts}`, 20, 30);
     }
+
+    removeListeners() {
+        return;
+    }
 }
 
 export { Blasteroid };
