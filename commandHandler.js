@@ -1,6 +1,6 @@
 // Game State Variables
-let totalDistance = 200; // The total distance required to reach the destination
-let distanceLeft = totalDistance; // Tracks the remaining distance
+let totalDistance = 200; // Total distance required to reach the destination
+let distanceLeft = totalDistance; // Remaining distance
 let shipHealth = 3;
 let hasStartedJourney = false;
 let currentRoute = null;
@@ -29,83 +29,52 @@ function handleCommand(command) {
 
     if (lowerCommand === "help") {
         return "Commands: PURPOSE, TRAVEL [route], LIST, STATUS, CLEAR, HELP, EXIT, RESTART";
-    } 
-    
-    else if (lowerCommand === "list") {
+    } else if (lowerCommand === "list") {
         return Object.keys(routes).length > 0
             ? "Available routes: " + Object.keys(routes).join(", ")
             : "No more routes available.";
-    } 
-    
-    else if (lowerCommand === "status") {
+    } else if (lowerCommand === "status") {
         return `Health: ${shipHealth} | Distance Left: ${distanceLeft}`;
-    }
-    else if (lowerCommand === "breakout") {
+    } else if (lowerCommand === "breakout") {
         return ["Starting breakout minigame...", "start_breakout"];
-
-    }
-
-    else if (lowerCommand === "asteroid") {
+    } else if (lowerCommand === "asteroid") {
         return ["Starting asteroid minigame...", "start_asteroid"];
-    }
-
-    else if (lowerCommand === "typing") {
+    } else if (lowerCommand === "typing") {
         return ["Starting typing minigame...", "start_typing"];
-    }
-
-    else if (lowerCommand === "blasteroid") {
+    } else if (lowerCommand === "blasteroid") {
         return ["Starting blasteroid minigame...", "start_blasteroid"];
-    }
-
-    else if (lowerCommand === "purpose") {
+    } else if (lowerCommand === "purpose") {
         return "AAAAGGGGHHHH";
-    }
-
-    else if (lowerCommand === "chess") {
+    } else if (lowerCommand === "chess") {
         return ["Starting chess minigame...", "start_chess"];
-    }
-    
-    else if (lowerCommand === "riddle") {
-        return ["Starting riddle minigame...", "start_chess"];
-    }
-    
-    else if (lowerCommand.startsWith("travel ")) {
+    } else if (lowerCommand === "riddle") {
+        return ["Starting riddle minigame...", "start_riddle"];
+    } else if (lowerCommand.startsWith("travel ")) {
         let route = command.split(" ")[1];
-
         if (routes[route]) {
-            currentRoute = route; // Store the selected route for minigame
+            currentRoute = route; // Store the selected route
             return [`Traveled via ${route}. Starting minigame...`, "start_minigame"];
         } else {
             return "Unknown route. Type 'LIST' to see available routes.";
         }
-    } 
-    
-    else if (lowerCommand === "clear") {
-        return "clear_screen"; // Flag for Terminal to clear history
-    }
-    
-    else if (lowerCommand === "exit") {
-        return "exit_terminal"; // Flag for Terminal to exit
-    } 
-    
-    else if (lowerCommand === "restart") {
+    } else if (lowerCommand === "clear") {
+        return "clear_screen";
+    } else if (lowerCommand === "exit") {
+        return "exit_terminal";
+    } else if (lowerCommand === "restart") {
         resetGameState();
         return "Game has been restarted.";
-    }
-    
-    else {
+    } else {
         return "Unknown command. Type 'HELP' for options.";
     }
 }
 
-// Reset Game State (Now Exported)
+// Reset Game State
 function resetGameState() {
     shipHealth = 3;
     distanceLeft = totalDistance;
     hasStartedJourney = false;
     currentRoute = null;
-
-    // Reset routes
     routes = {
         "5-Distance": 5,
         "10-Distance": 10,
@@ -116,10 +85,7 @@ function resetGameState() {
         "100-Distance": 100,
         "150-Distance": 150,
         "200-Distance": 200
-
-
     };
 }
 
-// Exports for ES Modules
 export { handleCommand, resetGameState };

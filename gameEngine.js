@@ -1,11 +1,11 @@
 import { Timer } from "./timer.js";
 import { TypingGame } from "./typingGame.js"; // Import TypingGame
-import { BreakoutGame} from "./breakout.js";
+import { BreakoutGame } from "./breakout.js";
 import { Terminal } from "./terminal.js";
 import { Blasteroid } from "./blasteroid.js";
 import { ChessGame } from "./chess.js";
-import { Xenomorph } from "./riddle.js"
-import { GameOverScreen } from "./gameOverScreen.js"
+import { Xenomorph } from "./riddle.js";
+import { GameOverScreen } from "./gameOverScreen.js";
 
 class GameEngine {
     constructor(options) {
@@ -18,6 +18,7 @@ class GameEngine {
         this.running = false;
         this.options = options || { debugging: false };
         this.currentMinigame = null;
+        this.currentTerminal = null;
     }
 
     init(ctx) {
@@ -25,6 +26,9 @@ class GameEngine {
         this.startInput();
         this.timer = new Timer();
         console.log("✅ Game Engine Initialized");
+        // Start with the Terminal instance (which will show boot-up and instructions)
+        this.currentTerminal = new Terminal(this);
+        this.addEntity(this.currentTerminal);
     }
 
     start() {
@@ -63,28 +67,24 @@ class GameEngine {
     endGameOverScreen() {
         console.log("🔄 Transitioning from Game Over Screen to Terminal...");
     
-        // ✅ Remove the Game Over Screen
         if (this.currentGameOverScreen) {
             this.currentGameOverScreen.removeListeners();
         }
         this.currentGameOverScreen = null;
     
-        // ✅ Remove old Terminal instance before creating a new one
         if (this.currentTerminal) {
             this.currentTerminal.removeListeners();
         }
     
-        // ✅ Clear canvas before returning to the terminal
+        // Clear canvas before returning to the terminal
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         this.entities = [];
     
-        // ✅ Create a new Terminal instance and store it
+        // Create a new Terminal instance and store it
         this.currentTerminal = new Terminal(this);
         this.addEntity(this.currentTerminal);
     }
     
-    
-
     startInput() {
         const getXandY = (e) => ({
             x: e.clientX - this.ctx.canvas.getBoundingClientRect().left,
@@ -93,28 +93,36 @@ class GameEngine {
 
         // Mouse Listeners
         this.ctx.canvas.addEventListener("mousemove", (e) => {
-            if (this.options.debugging) //console.log("MOUSE_MOVE", getXandY(e));
+            if (this.options.debugging) {
+                //console.log("MOUSE_MOVE", getXandY(e));
+            }
             this.mouse = getXandY(e);
         });
 
         this.ctx.canvas.addEventListener("click", (e) => {
-            if (this.options.debugging) //console.log("CLICK", getXandY(e));
+            if (this.options.debugging) {
+                //console.log("CLICK", getXandY(e));
+            }
             this.click = getXandY(e);
         });
 
         this.ctx.canvas.addEventListener("wheel", (e) => {
-            if (this.options.debugging) //console.log("WHEEL", getXandY(e), e.wheelDelta);
-            e.preventDefault(); // Prevent scrolling
+            if (this.options.debugging) {
+                //console.log("WHEEL", getXandY(e), e.wheelDelta);
+            }
+            e.preventDefault();
             this.wheel = e;
         });
 
         this.ctx.canvas.addEventListener("contextmenu", (e) => {
-            if (this.options.debugging) //console.log("RIGHT_CLICK", getXandY(e));
-            e.preventDefault(); // Prevent context menu
+            if (this.options.debugging) {
+                //console.log("RIGHT_CLICK", getXandY(e));
+            }
+            e.preventDefault();
             this.rightclick = getXandY(e);
         });
 
-        // Keyboard Listeners (Using `window` to prevent canvas focus issues)
+        // Keyboard Listeners
         window.addEventListener("keydown", (event) => (this.keys[event.key] = true));
         window.addEventListener("keyup", (event) => (this.keys[event.key] = false));
     }
@@ -127,46 +135,62 @@ class GameEngine {
     startTypingGame() {
         console.log("🚀 Starting Typing Minigame...");
         this.currentMinigame = new TypingGame(this);
-        this.currentMinigameType = ""
+        this.currentMinigameType = "typing";
     }
-    // Start breakout game
+    // Start Breakout game
     startBreakoutGame() {
         console.log("🚀 Starting Breakout Minigame...");
         this.currentMinigame = new BreakoutGame(this);
         this.currentMinigameType = "breakout";
     }
-    // Start blasteroid game
+    // Start Blasteroid game
     startBlasteroidGame() {
         console.log("🚀 Starting Blasteroid Minigame...");
         this.currentMinigame = new Blasteroid(this);
         this.currentMinigameType = "blasteroid";
     }
-    // Start chess game
+    // Start Chess game
     startChessGame() {
         console.log("🚀 Starting Chess Minigame...");
         this.currentMinigame = new ChessGame(this);
         this.currentMinigameType = "chess";
     }
-    // Start riddle game
+    // Start Riddle game
     startRiddleGame() {
         console.log("🚀 Starting Riddle Minigame...");
         this.currentMinigame = new Xenomorph(this);
         this.currentMinigameType = "riddle";
     }
 
+    // New method to start a trial from the Terminal's Y/N prompt.
+    startTrial(trialNumber) {
+        console.log(`🚀 Starting Trial ${trialNumber}...`);
+        // For example, trial 1 starts the TypingGame.
+        // You can expand this logic to choose different minigames.
+        if (trialNumber === 1) {
+            this.startTypingGame();
+        } else {
+            // Default to TypingGame if no other trial is defined.
+            this.startTypingGame();
+        }
+    }
+
     draw() {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-
+    
         if (this.currentMinigame) {
-            console.log("🚀 drawing minigame!")
+            // Draw the active minigame
+            // (Optionally remove the following log for production)
+            console.log("🚀 Drawing minigame!");
             this.currentMinigame.draw(this.ctx);
         } else {
+            // Draw all entities (including Terminal)
             for (let i = 0; i < this.entities.length; i++) {
                 this.entities[i].draw(this.ctx);
             }
         }
     }
-
+    
     update() {
         if (this.currentMinigame) {
             this.currentMinigame.update();
@@ -177,7 +201,7 @@ class GameEngine {
             this.entities = this.entities.filter((entity) => !entity.removeFromWorld);
         }
     }
-
+    
     loop() {
         this.clockTick = this.timer.tick();
         this.update();

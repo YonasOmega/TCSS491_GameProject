@@ -33,7 +33,8 @@ class Terminal {
         this.showCursor = true;
         this.scanlineY = 0;
         this.gameState = "idle";
-        // Initial printing
+
+        // Initial printing of boot and instruction text.
         this.gameInstructions();
 
         // Prevent duplicate intervals
@@ -53,7 +54,7 @@ class Terminal {
         // Lock user input while instructions are printing.
         this.gameState = "instructions";
         
-        // Define the boot-up text and instructions.
+        // Define the boot‑up text and instructions.
         const bootText = [
             "Initializing system...",
             "Loading modules...",
@@ -63,14 +64,15 @@ class Terminal {
             "Welcome, Pilot!",
             "Complete trials to move the ship closer to its destination.",
             "Fail three trials and the ship explodes!",
-            "Good luck!"
+            "Good luck!",
+            "ATTEMPT TRIAL 1? [Y/N]"
         ];
         
         // Time (in milliseconds) between lines.
         const delayBetweenLines = 700;
         let delay = 0;
         
-        // Print boot-up text lines first.
+        // Print boot‑up text lines first.
         bootText.forEach((line) => {
             setTimeout(() => {
                 this.history.push(line);
@@ -86,20 +88,19 @@ class Terminal {
             delay += delayBetweenLines;
         });
         
-        // Once all text has been printed, re-enable terminal input.
+        // Once all text has been printed, switch to trial confirmation mode.
         setTimeout(() => {
-            this.gameState = "terminal";
+            this.gameState = "trial-confirmation";
         }, delay);
     }    
 
     // ----- Sidebar Functions -----
     initializeSidebar() {
-        // Sidebar occupies the left 200px of the area above the terminal.
         this.sidebar = {
             x: 0,
             y: 0,
             width: 200,
-            height: this.terminalY, // all area above the terminal
+            height: this.terminalY,
             info: {
                 "Flux": 50,
                 "Quantum": 75,
@@ -110,7 +111,6 @@ class Terminal {
     }
 
     updateSidebar() {
-        // Slow random fluctuations
         this.sidebar.info["Flux"] = Math.max(0, Math.min(100, this.sidebar.info["Flux"] + (Math.random() - 0.5) * 0.5));
         this.sidebar.info["Quantum"] = Math.max(0, Math.min(100, this.sidebar.info["Quantum"] + (Math.random() - 0.5) * 0.5));
         this.sidebar.info["Stellar Drift"] = Number((this.sidebar.info["Stellar Drift"] + (Math.random() - 0.5) * 0.02).toFixed(2));
@@ -118,14 +118,12 @@ class Terminal {
     }
 
     drawSidebar(ctx) {
-        // Draw an opaque sidebar background (no padding) on the left side above the terminal.
         ctx.fillStyle = "black";
         ctx.fillRect(this.sidebar.x, this.sidebar.y, this.sidebar.width, this.sidebar.height);
         ctx.strokeStyle = "rgb(0, 255, 0)";
         ctx.lineWidth = 2;
         ctx.strokeRect(this.sidebar.x, this.sidebar.y, this.sidebar.width, this.sidebar.height);
 
-        // Draw sidebar text
         ctx.fillStyle = "rgb(0, 255, 0)";
         ctx.font = "16px monospace";
         let y = this.sidebar.y + 20;
@@ -138,7 +136,7 @@ class Terminal {
     // ----- Star (Night Sky) Functions -----
     initializeStars() {
         this.stars = [];
-        const skyHeight = this.terminalY; // area above terminal
+        const skyHeight = this.terminalY;
         const numStars = 150;
         for (let i = 0; i < numStars; i++) {
             this.stars.push({
@@ -179,9 +177,29 @@ class Terminal {
 
     handleInput(event) {
         if (event.key === "Enter") {
-            this.processCommand(this.input);
-            this.input = "";
-            this.cursorPosition = 0;
+            if (this.gameState === "trial-confirmation") {
+                const answer = this.input.trim().toLowerCase();
+                if (answer === "y") {
+                    this.history.push("Starting Trial 1...");
+                    // Trigger the trial start method on your game object.
+                    if (this.game.startTrial) {
+                        this.game.startTrial(1);
+                    }
+                } else if (answer === "n") {
+                    this.history.push("Trial 1 canceled. Awaiting further instructions...");
+                    // You can add additional handling here if desired.
+                } else {
+                    this.history.push("Invalid input. Please type Y or N.");
+                }
+                this.input = "";
+                this.cursorPosition = 0;
+                // After handling the trial prompt, revert to normal terminal command processing.
+                this.gameState = "terminal";
+            } else {
+                this.processCommand(this.input);
+                this.input = "";
+                this.cursorPosition = 0;
+            }
         } else if (event.key === "Backspace") {
             if (this.cursorPosition > 0) {
                 this.input =
@@ -196,13 +214,12 @@ class Terminal {
                 this.input.slice(this.cursorPosition);
             this.cursorPosition++;
         }
-    }    
+    }
 
     processCommand(command) {
         if (command.trim() === "") return;
         this.history.push("> " + command);
         let response = handleCommand(command);
-        // Only add a loading bar for game-loading commands (start_)
         if (Array.isArray(response) && response[1].startsWith("start_")) {
             this.showLoadingBar(() => {
                 this._processCommandResponse(response);
@@ -224,7 +241,7 @@ class Terminal {
             } else if (state === "start_breakout") {
                 this.game.startBreakoutGame();
             } else if (state === "start_chess") {
-                this.game.startChessGame
+                this.game.startChessGame();
             } else if (state === "start_riddle") {
                 this.game.startRiddleGame();
             }
@@ -240,10 +257,9 @@ class Terminal {
         if (this.history.length > this.maxLines) this.history.shift();
     }
 
-    // Displays a loading bar before executing game-loading commands.
     showLoadingBar(callback) {
         const totalSteps = 10;
-        const intervalTime = 200; // total delay of 2 seconds
+        const intervalTime = 200;
         let progress = 0;
         const loadingMessageIndex = this.history.length;
         this.history.push("Loading: [" + " ".repeat(totalSteps) + "] 0%");
@@ -263,7 +279,6 @@ class Terminal {
     update() {
         this.updateStars();
         this.updateSidebar();
-        // Update scanline for terminal area
         this.scanlineY += 2;
         if (this.scanlineY > this.terminalHeight) {
             this.scanlineY = 0;
@@ -276,7 +291,7 @@ class Terminal {
         ctx.fillRect(0, 0, this.canvas.width, this.terminalY);
         this.drawSky(ctx);
 
-        // Draw sidebar on the left (covering its region so stars don't show through)
+        // Draw sidebar on the left
         this.drawSidebar(ctx);
 
         // Draw horizontal separator above terminal area
@@ -292,14 +307,13 @@ class Terminal {
         ctx.fillStyle = "black";
         ctx.fillRect(0, this.terminalY, this.canvas.width, this.terminalHeight);
 
-        // Set text style for terminal output
+        // Set text style and display terminal history
         ctx.fillStyle = "rgb(0, 255, 0)";
         const padding = 10;
         const maxWidth = this.canvas.width - padding * 2;
         const lineHeight = 20;
         const maxLinesInTerminal = Math.floor((this.terminalHeight - 30) / lineHeight);
 
-        // Flatten history and wrap text, then display only the most recent lines
         let allLines = [];
         for (let line of this.history) {
             let wrapped = this.wrapText(line, maxWidth, ctx.font);
