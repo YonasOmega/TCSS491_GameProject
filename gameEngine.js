@@ -18,8 +18,7 @@ class GameEngine {
         this.running = false;
         this.options = options || { debugging: false };
         this.currentMinigame = null;
-        this.currentTerminal = null;
-        this.currentTrial = 1; // Track trial number
+        this.assetManager = null;
     }
 
     init(ctx) {

@@ -1,5 +1,3 @@
-// Blasteroid.js
-
 // Utility function for random integers
 function randomInt(max) {
     return Math.floor(Math.random() * max);
@@ -7,7 +5,7 @@ function randomInt(max) {
 
 // Target class used by Blasteroid
 class Target {
-    constructor(game, x, y) {
+    constructor(game, x, y, cometImage) {
         // 'game' here refers to the Blasteroid instance
         this.game = game;
         this.x = x;
@@ -18,12 +16,12 @@ class Target {
         this.growthRate = 0.15; // Adjust growth rate as desired
         this.growing = true;
         this.removeFromWorld = false;
-        // Optionally, use an image asset if available:
-        // this.cometImage = game.assetManager ? game.assetManager.getAsset("./Assets/comet.png") : null;
-        this.cometImage = null;
+        this.cometImage = cometImage; // Use the passed image
         this.scored = false;
+
+        console.log("Comet Image:", this.cometImage); // Debugging
     }
-    
+
     update() {
         // Animate the target: grow then shrink
         if (this.growing) {
@@ -41,18 +39,19 @@ class Target {
                 this.removeFromWorld = true;
             }
         }
-        
+
         // Check for click detection
-        if (this.game.click && this.isClicked(this.game.click)) {
+        if (this.game.game.click && this.isClicked(this.game.game.click)) {
+            console.log("Comet clicked!"); // Debugging
             if (!this.scored) {
                 this.game.score++;
                 this.scored = true;
             }
             this.removeFromWorld = true;
-            this.game.click = null;
+            this.game.game.click = null; // Reset click after handling
         }
     }
-    
+
     draw(ctx) {
         if (this.cometImage) {
             ctx.save();
@@ -73,11 +72,13 @@ class Target {
             ctx.closePath();
         }
     }
-    
+
     isClicked(click) {
         const dx = click.x - this.x;
         const dy = click.y - this.y;
-        return Math.sqrt(dx * dx + dy * dy) <= this.currentRadius;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        console.log(`Click at (${click.x}, ${click.y}), Comet at (${this.x}, ${this.y}), Distance: ${distance}, Radius: ${this.currentRadius}`); // Debugging
+        return distance <= this.currentRadius;
     }
 }
 
@@ -94,8 +95,19 @@ class Blasteroid {
         this.targets = []; // Array to hold active targets
         this.lastSpawnTime = Date.now();
         this.SPAWN_INTERVAL = 765; // milliseconds
+
+        // Load the comet image directly
+        this.cometImage = new Image();
+        this.cometImage.src = './Assets/comet.png'; // Path to the comet sprite
+        this.cometImage.onload = () => {
+            console.log("Comet image loaded!");
+            this.gameStarted = true; // Start the game once the image is loaded
+        };
+        this.cometImage.onerror = () => {
+            console.error("Failed to load comet image!");
+        };
     }
-    
+
     // Creates a new target and adds it to the targets array.
     createTarget() {
         if (this.gameOver || !this.gameStarted) return;
@@ -104,10 +116,10 @@ class Blasteroid {
         // Ensure target is fully within canvas; target radius is up to 30.
         const x = randomInt(canvasWidth - 60) + 30;
         const y = randomInt(canvasHeight - 60) + 30;
-        const target = new Target(this, x, y);
+        const target = new Target(this, x, y, this.cometImage); // Pass the loaded image
         this.targets.push(target);
     }
-    
+
     update() {
         // Spawn new targets at defined intervals
         if (this.gameStarted && !this.gameOver) {
@@ -117,14 +129,14 @@ class Blasteroid {
                 this.lastSpawnTime = currentTime;
             }
         }
-        
+
         // Update each target
         for (let target of this.targets) {
             if (typeof target.update === "function") target.update();
         }
         // Remove targets flagged for removal
         this.targets = this.targets.filter(target => !target.removeFromWorld);
-        
+
         // Check for game over condition
         if (this.lives <= 0 && !this.gameOver) {
             this.gameOver = true;
@@ -134,17 +146,17 @@ class Blasteroid {
             }, 100);
         }
     }
-    
+
     draw(ctx) {
         // Clear the canvas with a background color
         ctx.fillStyle = "#000";
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        
+
         // Draw all active targets
         for (let target of this.targets) {
             if (typeof target.draw === "function") target.draw(ctx);
         }
-        
+
         // Draw UI: display score and lives
         ctx.fillStyle = "white";
         ctx.font = "24px Arial";
