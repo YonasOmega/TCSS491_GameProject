@@ -33,6 +33,8 @@ class Terminal {
         this.showCursor = true;
         this.scanlineY = 0;
         this.gameState = "idle";
+        // Initial printing
+        this.gameInstructions();
 
         // Prevent duplicate intervals
         if (this.cursorInterval) clearInterval(this.cursorInterval);
@@ -45,6 +47,50 @@ class Terminal {
         this.keyListener = (event) => this.handleInput(event);
         window.addEventListener("keydown", this.keyListener);
     }
+
+    // Initial print done at beginning of game
+    gameInstructions() {
+        // Lock user input while instructions are printing.
+        this.gameState = "instructions";
+        
+        // Define the boot-up text and instructions.
+        const bootText = [
+            "Initializing system...",
+            "Loading modules...",
+            "System boot complete."
+        ];
+        const instructionsText = [
+            "Welcome, Pilot!",
+            "Complete trials to move the ship closer to its destination.",
+            "Fail three trials and the ship explodes!",
+            "Good luck!"
+        ];
+        
+        // Time (in milliseconds) between lines.
+        const delayBetweenLines = 700;
+        let delay = 0;
+        
+        // Print boot-up text lines first.
+        bootText.forEach((line) => {
+            setTimeout(() => {
+                this.history.push(line);
+            }, delay);
+            delay += delayBetweenLines;
+        });
+        
+        // Then print the instructions.
+        instructionsText.forEach((line) => {
+            setTimeout(() => {
+                this.history.push(line);
+            }, delay);
+            delay += delayBetweenLines;
+        });
+        
+        // Once all text has been printed, re-enable terminal input.
+        setTimeout(() => {
+            this.gameState = "terminal";
+        }, delay);
+    }    
 
     // ----- Sidebar Functions -----
     initializeSidebar() {
