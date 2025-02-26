@@ -4,6 +4,7 @@ import { BreakoutGame} from "./breakout.js";
 import { Terminal } from "./terminal.js";
 import { Blasteroid } from "./blasteroid.js";
 import { ChessGame } from "./chess.js";
+import { Xenomorph } from "./riddle.js"
 import { GameOverScreen } from "./gameOverScreen.js"
 
 class GameEngine {
@@ -145,6 +146,12 @@ class GameEngine {
         console.log("🚀 Starting Chess Minigame...");
         this.currentMinigame = new ChessGame(this);
         this.currentMinigameType = "chess";
+    }
+    // Start riddle game
+    startRiddleGame() {
+        console.log("🚀 Starting Riddle Minigame...");
+        this.currentMinigame = new Xenomorph(this);
+        this.currentMinigameType = "riddle";
     }
 
     draw() {

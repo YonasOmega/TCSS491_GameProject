@@ -179,6 +179,8 @@ class Terminal {
                 this.game.startBreakoutGame();
             } else if (state === "start_chess") {
                 this.game.startChessGame
+            } else if (state === "start_riddle") {
+                this.game.startRiddleGame();
             }
         } else {
             if (response === "clear_screen") {
