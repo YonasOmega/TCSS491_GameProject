@@ -194,10 +194,10 @@ class GameEngine {
             case 3:
                 this.startBlasteroidGame();
                 break;
+            // case 4:
+            //     this.startChessGame();
+            //     break;
             case 4:
-                this.startChessGame();
-                break;
-            case 5:
                 this.startRiddleGame();
                 break;
             default:

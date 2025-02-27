@@ -320,7 +320,7 @@ class Terminal {
         this.drawSky(ctx);
 
         // Draw sidebar on the left
-        this.drawSidebar(ctx);
+        //this.drawSidebar(ctx);
 
         // Draw horizontal separator above terminal area
         ctx.strokeStyle = "rgb(0, 255, 0)";
