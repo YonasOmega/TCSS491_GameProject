@@ -6,6 +6,7 @@ import { Blasteroid } from "./blasteroid.js";
 import { ChessGame } from "./chess.js";
 import { RiddleGame } from "./riddle.js";
 import { GameOverScreen } from "./gameOverScreen.js";
+import { TrialManager } from "./trialManager.js";
 
 class GameEngine {
     constructor(options) {
@@ -20,6 +21,8 @@ class GameEngine {
         this.currentMinigame = null;
         this.assetManager = null;
         this.currentTrial = 1;
+        // Create a trial manager instance to track successes and failures.
+        this.trialManager = new TrialManager(this);
     }
 
     init(ctx) {
@@ -36,32 +39,46 @@ class GameEngine {
     start() {
         this.running = true;
         console.log("✅ Game Loop Started");
-
         const gameLoop = () => {
             if (this.running) {
                 this.loop();
                 requestAnimationFrame(gameLoop);
             }
         };
-
         gameLoop();
     }
 
-    endMinigame(resultMessage) {
-        console.log("🚀 Minigame Ended, Showing Game Over Screen...");
+    endMinigame(resultMessage, wasSuccess = false) {
+        console.log("🚀 Minigame Ended, Showing Result Screen...");
 
         if (this.currentMinigame) {
-            this.currentMinigame.removeListeners(); // Properly remove key events
+            this.currentMinigame.removeListeners(); // Remove minigame key events
         }
     
         // Remove current minigame reference
         this.currentMinigame = null;
         this.currentMinigameType = null;
     
-        // Clear all entities before showing the result screen
-        this.entities = [];
+        // Update trial progress via the TrialManager
+        this.trialManager.completeTrial(wasSuccess);
     
-        // Show game over screen
+        // Check if three or more failures have occurred
+        if (this.trialManager.failureCount >= 3) {
+            console.log("Game Over: Too many failures.");
+            this.currentGameOverScreen = new GameOverScreen(this, "Game Over! You've failed three times. Please restart.");
+            this.addEntity(this.currentGameOverScreen);
+            return;
+        }
+    
+        // Check win condition: if the player has completed all four trials
+        if (this.currentTrial > 4) {
+            console.log("Game Won: All trials completed.");
+            this.currentGameOverScreen = new GameOverScreen(this, "Congratulations! You have won the game.");
+            this.addEntity(this.currentGameOverScreen);
+            return;
+        }
+    
+        // Otherwise, show the trial result screen.
         this.currentGameOverScreen = new GameOverScreen(this, resultMessage);
         this.addEntity(this.currentGameOverScreen);
     }
@@ -102,14 +119,12 @@ class GameEngine {
             }
             this.mouse = getXandY(e);
         });
-
         this.ctx.canvas.addEventListener("click", (e) => {
             if (this.options.debugging) {
                 //console.log("CLICK", getXandY(e));
             }
             this.click = getXandY(e);
         });
-
         this.ctx.canvas.addEventListener("wheel", (e) => {
             if (this.options.debugging) {
                 //console.log("WHEEL", getXandY(e), e.wheelDelta);
@@ -117,12 +132,10 @@ class GameEngine {
             e.preventDefault();
             this.wheel = e;
         });
-
         this.ctx.canvas.addEventListener("contextmenu", (e) => {
             if (this.options.debugging) {
                 //console.log("RIGHT_CLICK", getXandY(e));
             }
-            //e.preventDefault();
             this.rightclick = getXandY(e);
         });
 
@@ -136,10 +149,10 @@ class GameEngine {
                 if (this.currentMinigame) {
                     if (event.key === "1") {
                         console.log("Debug: Simulating minigame success");
-                        this.endMinigame("Trial passed (debug)");
+                        this.endMinigame("Trial passed (debug)", true);
                     } else if (event.key === "2") {
                         console.log("Debug: Simulating minigame failure");
-                        this.endMinigame("Trial failed (debug)");
+                        this.endMinigame("Trial failed (debug)", false);
                     }
                 }
             });
@@ -153,30 +166,46 @@ class GameEngine {
     // Start the Typing Minigame
     startTypingGame() {
         console.log("🚀 Starting Typing Minigame...");
+        // Remove Terminal listeners if active
+        if (this.currentTerminal) {
+            this.currentTerminal.removeListeners();
+        }
         this.currentMinigame = new TypingGame(this);
         this.currentMinigameType = "typing";
     }
-    // Start Breakout game
+    // Start Breakout Game
     startBreakoutGame() {
         console.log("🚀 Starting Breakout Minigame...");
+        if (this.currentTerminal) {
+            this.currentTerminal.removeListeners();
+        }
         this.currentMinigame = new BreakoutGame(this);
         this.currentMinigameType = "breakout";
     }
-    // Start Blasteroid game
+    // Start Blasteroid Game
     startBlasteroidGame() {
         console.log("🚀 Starting Blasteroid Minigame...");
+        if (this.currentTerminal) {
+            this.currentTerminal.removeListeners();
+        }
         this.currentMinigame = new Blasteroid(this);
         this.currentMinigameType = "blasteroid";
     }
-    // Start Chess game
+    // Start Chess Game
     startChessGame() {
         console.log("🚀 Starting Chess Minigame...");
+        if (this.currentTerminal) {
+            this.currentTerminal.removeListeners();
+        }
         this.currentMinigame = new ChessGame(this);
         this.currentMinigameType = "chess";
     }
-    // Start Riddle game
+    // Start Riddle Game
     startRiddleGame() {
         console.log("🚀 Starting Riddle Minigame...");
+        if (this.currentTerminal) {
+            this.currentTerminal.removeListeners();
+        }
         this.currentMinigame = new RiddleGame(this);
         this.currentMinigameType = "riddle";
     }
@@ -184,7 +213,7 @@ class GameEngine {
     // New method to start a trial from the Terminal's Y/N prompt.
     startTrial(trialNumber) {
         console.log(`🚀 Starting Trial ${trialNumber}...`);
-        switch(trialNumber) {
+        switch (trialNumber) {
             case 1:
                 this.startTypingGame();
                 break;
@@ -194,21 +223,16 @@ class GameEngine {
             case 3:
                 this.startBlasteroidGame();
                 break;
-            // case 4:
-            //     this.startChessGame();
-            //     break;
             case 4:
                 this.startRiddleGame();
                 break;
             default:
-                // Default behavior or repeat minigames
                 this.startTypingGame();
         }
-    }    
+    }
 
     draw() {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    
         if (this.currentMinigame) {
             // Draw the active minigame
             console.log("🚀 Drawing minigame!");

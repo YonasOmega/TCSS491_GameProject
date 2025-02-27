@@ -50,8 +50,6 @@ class Terminal {
             this.showCursor = !this.showCursor;
         }, 500);
 
-        // Store key listener for removal
-        //this.keyListener = (event) => this.handleInput(event);
         console.log("Terminal constructor");
         this.keyListener = (event) => {
             if (!event.repeat) {
@@ -61,12 +59,9 @@ class Terminal {
         window.addEventListener("keydown", this.keyListener);
     }
 
-    // Initial print done at beginning of game
     gameInstructions() {
         // Lock user input while instructions are printing.
         this.gameState = "instructions";
-        
-        // Define the boot‑up text and instructions.
         const bootText = [
             "Initializing system...",
             "Loading modules...",
@@ -79,34 +74,25 @@ class Terminal {
             "Good luck!",
             "ATTEMPT TRIAL 1? [Y/N]"
         ];
-        
-        // Time (in milliseconds) between lines.
         const delayBetweenLines = 700;
         let delay = 0;
-        
-        // Print boot‑up text lines first.
         bootText.forEach((line) => {
             setTimeout(() => {
                 this.history.push(line);
             }, delay);
             delay += delayBetweenLines;
         });
-        
-        // Then print the instructions.
         instructionsText.forEach((line) => {
             setTimeout(() => {
                 this.history.push(line);
             }, delay);
             delay += delayBetweenLines;
         });
-        
-        // Once all text has been printed, switch to trial confirmation mode.
         setTimeout(() => {
             this.gameState = "trial-confirmation";
         }, delay);
-    }    
+    }
 
-    // New method for prompting next trial after a game ends
     postTrialInstructions() {
         this.history.push("Trial completed.");
         this.history.push("Ready for next trial? [Y/N]");
@@ -195,44 +181,36 @@ class Terminal {
     }
 
     handleInput(event) {
-        event.preventDefault(); // Prevent duplicate handling
-
+        event.preventDefault();
         if (event.key === "Enter") {
             const command = this.input.trim().toLowerCase();
-    
-            // Always allow minigame names and commands
             if (this.gameState !== "instructions") {
                 let response = handleCommand(command);
-    
                 if (Array.isArray(response) && response[1].startsWith("start_")) {
-                    console.log("Pass 1")
+                    console.log("Pass 1");
                     this.showLoadingBar(() => {
                         this._processCommandResponse(response);
                     });
                     this.input = "";
                     return;
                 } else {
-                    console.log("Pass 2")
+                    console.log("Pass 2");
                     this._processCommandResponse(response);
                 }
             }
-    
-            // Handle trial confirmation
             if (this.gameState === "trial-confirmation") {
                 if (command === "y") {
                     this.history.push(`Starting Trial ${this.game.currentTrial}...`);
                     this.game.startTrial(this.game.currentTrial);
                     this.game.currentTrial++; // Increment AFTER starting trial
-                    this.gameState = "terminal"; // Exit confirmation mode
+                    this.gameState = "terminal";
                 } else if (command === "n") {
                     this.history.push("Trial canceled. Awaiting further instructions...");
-                    this.gameState = "terminal"; // Exit confirmation mode
+                    this.gameState = "terminal";
                 } else {
                     this.history.push("Invalid input. Please type Y, N, or a minigame name.");
                 }
             }
-    
-            // Clear input and reset cursor
             this.input = "";
             this.cursorPosition = 0;
         } else if (event.key === "Backspace") {
@@ -245,13 +223,11 @@ class Terminal {
             this.cursorPosition++;
         }
     }
-    
+
     _processCommandResponse(response) {
         if (Array.isArray(response)) {
             let [message, state] = response;
             this.history.push(message);
-    
-            // Check if the command corresponds to starting a minigame
             switch (state) {
                 case "start_typing":
                     this.game.entities = [];
@@ -303,7 +279,6 @@ class Terminal {
         }, intervalTime);
     }
 
-    // ----- Update & Draw Methods -----
     update() {
         this.updateStars();
         this.updateSidebar();
@@ -318,10 +293,6 @@ class Terminal {
         ctx.fillStyle = "black";
         ctx.fillRect(0, 0, this.canvas.width, this.terminalY);
         this.drawSky(ctx);
-
-        // Draw sidebar on the left
-        //this.drawSidebar(ctx);
-
         // Draw horizontal separator above terminal area
         ctx.strokeStyle = "rgb(0, 255, 0)";
         ctx.lineWidth = 2;
@@ -330,18 +301,15 @@ class Terminal {
         ctx.lineTo(this.canvas.width, this.terminalY);
         ctx.stroke();
         ctx.closePath();
-
         // Draw terminal background (bottom third)
         ctx.fillStyle = "black";
         ctx.fillRect(0, this.terminalY, this.canvas.width, this.terminalHeight);
-
-        // Set text style and display terminal history
+        // Draw terminal history and current input
         ctx.fillStyle = "rgb(0, 255, 0)";
         const padding = 10;
         const maxWidth = this.canvas.width - padding * 2;
         const lineHeight = 20;
         const maxLinesInTerminal = Math.floor((this.terminalHeight - 30) / lineHeight);
-
         let allLines = [];
         for (let line of this.history) {
             let wrapped = this.wrapText(line, maxWidth, ctx.font);
@@ -350,21 +318,17 @@ class Terminal {
         if (allLines.length > maxLinesInTerminal) {
             allLines = allLines.slice(allLines.length - maxLinesInTerminal);
         }
-
         let y = this.terminalY + 10;
         for (let line of allLines) {
             ctx.fillText(line, padding, y);
             y += lineHeight;
         }
-
-        // Draw current input line and cursor
         const inputLine = "> " + this.input;
         const cursorX = ctx.measureText("> " + this.input.slice(0, this.cursorPosition)).width + padding;
         ctx.fillText(inputLine, padding, y);
         if (this.showCursor) {
             ctx.fillText("_", cursorX, y);
         }
-
         // Draw scanline effect in terminal area
         ctx.fillStyle = "rgba(0, 255, 0, 0.1)";
         ctx.fillRect(0, this.terminalY + this.scanlineY, this.canvas.width, 2);
