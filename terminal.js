@@ -51,7 +51,13 @@ class Terminal {
         }, 500);
 
         // Store key listener for removal
-        this.keyListener = (event) => this.handleInput(event);
+        //this.keyListener = (event) => this.handleInput(event);
+        console.log("Terminal constructor");
+        this.keyListener = (event) => {
+            if (!event.repeat) {
+                this.handleInput(event);
+            }
+        };
         window.addEventListener("keydown", this.keyListener);
     }
 
@@ -189,6 +195,8 @@ class Terminal {
     }
 
     handleInput(event) {
+        event.preventDefault(); // Prevent duplicate handling
+
         if (event.key === "Enter") {
             const command = this.input.trim().toLowerCase();
     
@@ -197,12 +205,14 @@ class Terminal {
                 let response = handleCommand(command);
     
                 if (Array.isArray(response) && response[1].startsWith("start_")) {
+                    console.log("Pass 1")
                     this.showLoadingBar(() => {
                         this._processCommandResponse(response);
                     });
                     this.input = "";
                     return;
                 } else {
+                    console.log("Pass 2")
                     this._processCommandResponse(response);
                 }
             }
@@ -257,6 +267,7 @@ class Terminal {
                     this.game.startChessGame();
                     break;
                 case "start_riddle":
+                    console.log("Starting Riddle Game from terminal");
                     this.game.startRiddleGame();
                     break;
                 default:

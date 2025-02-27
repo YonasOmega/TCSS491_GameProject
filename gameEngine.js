@@ -4,7 +4,7 @@ import { BreakoutGame } from "./breakout.js";
 import { Terminal } from "./terminal.js";
 import { Blasteroid } from "./blasteroid.js";
 import { ChessGame } from "./chess.js";
-import { Xenomorph } from "./riddle.js";
+import { RiddleGame } from "./riddle.js";
 import { GameOverScreen } from "./gameOverScreen.js";
 
 class GameEngine {
@@ -28,6 +28,7 @@ class GameEngine {
         this.timer = new Timer();
         console.log("✅ Game Engine Initialized");
         // Start with the Terminal instance (bootup mode: print full instructions)
+        console.log("making terminal from gameEngine.js");
         this.currentTerminal = new Terminal(this, true);
         this.addEntity(this.currentTerminal);
     }
@@ -176,7 +177,7 @@ class GameEngine {
     // Start Riddle game
     startRiddleGame() {
         console.log("🚀 Starting Riddle Minigame...");
-        this.currentMinigame = new Xenomorph(this);
+        this.currentMinigame = new RiddleGame(this);
         this.currentMinigameType = "riddle";
     }
 
