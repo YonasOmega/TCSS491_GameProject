@@ -5,18 +5,17 @@ class TrialManager {
         this.failureCount = 0;
         this.planetScale = 1; // initial scale factor for the planet sprite
         this.planetImage = new Image();
-        this.planetImage.src = "path/to/earth.png"; // update the path to your image as needed
+        this.planetImage.src = "assets/planet.png"; // load your planet image from the assets folder
     }
     
     completeTrial(success) {
         if (success) {
             this.successCount++;
-            // Increase planet scale by 20% on each success.
-            this.planetScale += 0.2;
         } else {
             this.failureCount++;
-            // GameEngine will handle game over if failureCount reaches 3.
         }
+        // Increase planet scale by 20% after each trial.
+        this.planetScale += 0.2;
     }
     
     drawDestination(ctx, canvasWidth) {
