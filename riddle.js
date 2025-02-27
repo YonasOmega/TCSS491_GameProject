@@ -103,7 +103,7 @@ class RiddleGame {
     }
 
     getQuestions() {
-        return [
+        const allQuestions =  [
             // EASY QUESTIONS
         {
             question: "What is the closest planet to the Sun?",
@@ -253,7 +253,19 @@ class RiddleGame {
             answers: ["Johannes Kepler", "Isaac Newton", "Galileo Galilei"],
             correctAnswer: "Galileo Galilei"
         },
+        {
+            question: "How long does it take light from the Sun to reach Earth?",
+            answers: ["8 minutes", "1 hour", "24 minutes"],
+            correctAnswer: "8 minutes"
+        }
     ];
+        // Shuffle the array of questions
+        for (let i = allQuestions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
+        }
+        
+        return allQuestions;
     }
 
     initUI() {

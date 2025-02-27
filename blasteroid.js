@@ -44,9 +44,19 @@ class Target {
                 this.game.score++;
                 this.scored = true;
                 
-                // Display milestone message at 20 points but continue playing
+                // Display achievement messages at milestone scores
                 if (this.game.score === 20) {
-                    this.game.showMilestoneMessage();
+                    this.game.showAchievementMessage("Achievement: 20 Asteroids Destroyed!");
+                } else if (this.game.score === 40) {
+                    this.game.showAchievementMessage("Achievement: 40 Asteroids Destroyed, How Far Can You Go?");
+                } else if (this.game.score === 60) {
+                    this.game.showAchievementMessage("Achievement: 60 Asteroids Destroyed, You're on Fire!");
+                } else if (this.game.score === 80) {
+                    this.game.showAchievementMessage("Achievement: 80 Asteroids Destroyed, Keep Blasting!");
+                } else if (this.game.score === 100) {
+                    this.game.showAchievementMessage("Achievement: 100 Asteroids Destroyed, You're a Blasteroid Master!");
+                } else if (this.game.score === 150) {
+                    this.game.showAchievementMessage("Achievement: 150 Asteroids Destroyed, Please Take a Break!");
                 }
             }
             this.removeFromWorld = true;
@@ -94,11 +104,19 @@ class Blasteroid {
         this.gameOver = false;
         this.gameStarted = false;
         this.showTitleScreen = true;
-        this.showMilestone = false;
-        this.milestoneTimestamp = 0;
+        this.showAchievement = false;
+        this.achievementTimestamp = 0;
         this.targets = []; // Array to hold active targets
         this.lastSpawnTime = Date.now();
-        this.SPAWN_INTERVAL = 765; // milliseconds
+        this.SPAWN_INTERVAL = 765; // milliseconds  ********TIME BETWEEN SPAWNS*******
+        this.stars = []; // Array to hold star objects
+        this.generateStarfield(100); // Generate 100 stars
+        this.cursorImage = new Image();
+        this.cursorImage.src = './assets/red_crosshair.png'; // Adjust the path as needed
+        this.cursorImage.onload = () => {
+        // Once image is loaded, set up the custom cursor
+        this.setupCustomCursor();
+};
 
         // Load the comet image directly
         this.cometImage = new Image();
@@ -151,7 +169,14 @@ class Blasteroid {
         this.startButton.style.border = '2px solid #0f0';
         this.startButton.style.boxShadow = '0 0 10px #0f0';
         this.startButton.style.cursor = 'pointer';
-        this.startButton.style.fontFamily = 'monospace';
+        this.startButton.style.fontFamily = 'monospace';        
+        // Create instruction set
+        this.instructionText = document.createElement('p');
+        this.instructionText.textContent = 'Shoot the asteroids!';
+        this.instructionText.style.fontFamily = 'monospace';
+        this.instructionText.style.fontSize = '20px';
+        this.instructionText.style.color = '#0f0'; // Neon green
+        this.instructionText.style.marginTop = '15px';
         
         this.startButton.onmouseover = () => {
             this.startButton.style.backgroundColor = '#0f0';
@@ -168,50 +193,58 @@ class Blasteroid {
         };
         
         this.titleContainer.appendChild(this.startButton);
+        this.titleContainer.appendChild(this.instructionText);
     }
     
-    // Show a message when the player reaches 20 points
-    showMilestoneMessage() {
-        this.showMilestone = true;
-        this.milestoneTimestamp = Date.now();
+    // Show an achievement message when the player reaches milestone scores
+    showAchievementMessage(message) {
+        this.showAchievement = true;
+        this.achievementTimestamp = Date.now();
         
-        // Create milestone message container if it doesn't exist
-        if (!this.milestoneContainer) {
+        // Create achievement message container if it doesn't exist
+        if (!this.achievementContainer) {
             const canvas = this.game.ctx.canvas;
             const container = canvas.parentNode;
             
-            this.milestoneContainer = document.createElement('div');
-            this.milestoneContainer.id = 'milestoneMessage';
-            this.milestoneContainer.style.position = 'absolute';
-            this.milestoneContainer.style.top = '50%';
-            this.milestoneContainer.style.left = '50%';
-            this.milestoneContainer.style.transform = 'translate(-50%, -50%)';
-            this.milestoneContainer.style.padding = '15px 30px';
-            this.milestoneContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-            this.milestoneContainer.style.color = '#0f0';
-            this.milestoneContainer.style.border = '2px solid #0f0';
-            this.milestoneContainer.style.boxShadow = '0 0 20px #0f0';
-            this.milestoneContainer.style.fontFamily = 'monospace';
-            this.milestoneContainer.style.fontSize = '24px';
-            this.milestoneContainer.style.textAlign = 'center';
-            this.milestoneContainer.style.zIndex = '1000';
-            this.milestoneContainer.textContent = 'Achievement Unlocked: 20 Asteroids Destroyed!';
+            this.achievementContainer = document.createElement('div');
+            this.achievementContainer.id = 'achievementMessage';
+            this.achievementContainer.style.position = 'absolute';
+            this.achievementContainer.style.top = '15px';
+            this.achievementContainer.style.right = '15px';
+            this.achievementContainer.style.padding = '10px 15px';
+            this.achievementContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            this.achievementContainer.style.color = '#0f0';
+            this.achievementContainer.style.border = '2px solid #0f0';
+            this.achievementContainer.style.boxShadow = '0 0 10px #0f0';
+            this.achievementContainer.style.fontFamily = 'monospace';
+            this.achievementContainer.style.fontSize = '16px';
+            this.achievementContainer.style.textAlign = 'center';
+            this.achievementContainer.style.zIndex = '1000';
+            this.achievementContainer.style.animation = 'fadeIn 0.3s';
+            this.achievementContainer.textContent = message;
             
-            container.appendChild(this.milestoneContainer);
+            container.appendChild(this.achievementContainer);
             
-            // Remove the message after 3 seconds
+            // Remove the message after 1.5 seconds
             setTimeout(() => {
-                this.hideMilestoneMessage();
-            }, 3000);
+                this.hideAchievementMessage();
+            }, 1500);
+        } else {
+            // Update existing message
+            this.achievementContainer.textContent = message;
+            // Reset the timer
+            setTimeout(() => {
+                this.hideAchievementMessage();
+            }, 1500);
         }
     }
     
-    // Hide the milestone message
-    hideMilestoneMessage() {
-        this.showMilestone = false;
-        if (this.milestoneContainer && this.milestoneContainer.parentNode) {
-            this.milestoneContainer.parentNode.removeChild(this.milestoneContainer);
-            this.milestoneContainer = null;
+    // Hide the achievement message
+    hideAchievementMessage() {
+        this.showAchievement = false;
+        if (this.achievementContainer && this.achievementContainer.parentNode) {
+            this.achievementContainer.parentNode.removeChild(this.achievementContainer);
+            this.achievementContainer = null;
         }
     }
     
@@ -251,9 +284,9 @@ class Blasteroid {
             return; // Don't update game state while on title screen
         }
         
-        // Check if milestone message should be removed
-        if (this.showMilestone && Date.now() - this.milestoneTimestamp > 3000) {
-            this.hideMilestoneMessage();
+        // Check if achievement message should be removed
+        if (this.showAchievement && Date.now() - this.achievementTimestamp > 1500) {
+            this.hideAchievementMessage();
         }
         
         // Spawn new targets at defined intervals
@@ -281,29 +314,48 @@ class Blasteroid {
             }, 100);
         }
     }
-
+    generateStarfield(numStars) {
+        const canvas = this.game.ctx.canvas;
+        for (let i = 0; i < numStars; i++) {
+            this.stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2 + 0.5,
+                brightness: Math.random(),
+                twinkleSpeed: Math.random() * 0.05 + 0.01
+            });
+        }
+    }
+    drawStarfield(ctx) {
+        for (let star of this.stars) {
+            // Make stars twinkle by changing brightness
+            star.brightness += star.twinkleSpeed;
+            if (star.brightness > 1 || star.brightness < 0.3) {
+                star.twinkleSpeed = -star.twinkleSpeed;
+            }
+            
+            // Draw the star
+            ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness})`;
+            ctx.fillRect(star.x, star.y, star.size, star.size);
+        }
+    }
     draw(ctx) {
         // Clear the canvas with a background color
         ctx.fillStyle = "#000";
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
+    
+        // Draw starfield background
+        this.drawStarfield(ctx);
+    
         if (this.showTitleScreen) {
-            // Draw starfield background for title screen
-            for (let i = 0; i < 100; i++) {
-                const x = Math.random() * ctx.canvas.width;
-                const y = Math.random() * ctx.canvas.height;
-                const size = Math.random() * 2;
-                ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-                ctx.fillRect(x, y, size, size);
-            }
             return;
         }
-
+    
         // Draw all active targets
         for (let target of this.targets) {
             if (typeof target.draw === "function") target.draw(ctx);
         }
-
+    
         // Draw UI: display score and lives
         ctx.fillStyle = "#0f0"; // Neon green
         ctx.font = "24px monospace";
@@ -367,34 +419,55 @@ class Blasteroid {
         scoreText.style.marginBottom = '40px';
         this.endContainer.appendChild(scoreText);
         
-        // Add play again button
-        const playAgainButton = document.createElement('button');
-        playAgainButton.textContent = 'PLAY AGAIN';
-        playAgainButton.style.padding = '15px 30px';
-        playAgainButton.style.fontSize = '24px';
-        playAgainButton.style.backgroundColor = '#000';
-        playAgainButton.style.color = '#0f0';
-        playAgainButton.style.border = '2px solid #0f0';
-        playAgainButton.style.boxShadow = '0 0 10px #0f0';
-        playAgainButton.style.cursor = 'pointer';
-        playAgainButton.style.fontFamily = 'monospace';
+    }
+    setupCustomCursor() {
+        const canvas = this.game.ctx.canvas;
+        const container = canvas.parentNode;
         
-        playAgainButton.onmouseover = () => {
-            playAgainButton.style.backgroundColor = '#0f0';
-            playAgainButton.style.color = '#000';
-        };
+        // Hide the default cursor when over the canvas
+        canvas.style.cursor = 'none';
         
-        playAgainButton.onmouseout = () => {
-            playAgainButton.style.backgroundColor = '#000';
-            playAgainButton.style.color = '#0f0';
-        };
+        // Create a cursor element
+        this.cursor = document.createElement('div');
+        this.cursor.id = 'customCursor';
+        this.cursor.style.position = 'absolute';
+        this.cursor.style.width = '32px'; // Adjust based on your image size
+        this.cursor.style.height = '32px'; // Adjust based on your image size
+        this.cursor.style.backgroundImage = `url(${this.cursorImage.src})`;
+        this.cursor.style.backgroundSize = 'contain';
+        this.cursor.style.backgroundRepeat = 'no-repeat';
+        this.cursor.style.pointerEvents = 'none'; // Make it pass-through for clicks
+        this.cursor.style.zIndex = '1000';
+        this.cursor.style.transform = 'translate(-50%, -50%)'; // Center the cursor
         
-        playAgainButton.onclick = () => {
-            this.removeEndScreen();
-            this.startGame();
-        };
+        // Important: Initially hide the cursor until mouse movement
+        this.cursor.style.display = 'none';
         
-        this.endContainer.appendChild(playAgainButton);
+        container.appendChild(this.cursor);
+        
+        // Move cursor with mouse
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            this.cursor.style.left = `${e.clientX - rect.left}px`;
+            this.cursor.style.top = `${e.clientY - rect.top}px`;
+            
+            // Make cursor visible on first mouse movement
+            if (this.cursor.style.display === 'none') {
+                this.cursor.style.display = 'block';
+            }
+        });
+        
+        // Hide cursor when mouse leaves canvas
+        canvas.addEventListener('mouseleave', () => {
+            this.cursor.style.display = 'none';
+        });
+        
+        // Don't automatically show cursor when mouse enters canvas
+        // Only show it when the mouse actually moves inside the canvas
+        canvas.addEventListener('mouseenter', () => {
+            // Don't set display to 'block' here
+            // Wait for mousemove event to show cursor
+        });
     }
     
     // Remove end screen
@@ -403,10 +476,18 @@ class Blasteroid {
             this.endContainer.parentNode.removeChild(this.endContainer);
         }
     }
+    removeCursor() {
+        if (this.cursor && this.cursor.parentNode) {
+            this.cursor.parentNode.removeChild(this.cursor);
+            // Restore default cursor
+            this.game.ctx.canvas.style.cursor = 'default';
+        }
+    }
 
     removeListeners() {
         this.removeTitleScreen();
-        this.hideMilestoneMessage();
+        this.hideAchievementMessage();
+        this.removeCursor();
         if (this.endContainer) {
             this.removeEndScreen();
         }
