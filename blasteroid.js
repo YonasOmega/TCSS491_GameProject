@@ -121,7 +121,7 @@ class Blasteroid {
 
         // Load the comet image directly
         this.cometImage = new Image();
-        this.cometImage.src = './Assets/comet.png'; // Path to the comet sprite
+        this.cometImage.src = './assets/comet.png'; // Path to the comet sprite
         this.cometImage.onerror = () => {
             console.error("Failed to load comet image!");
         };
