@@ -65,7 +65,8 @@ function handleCommand(command) {
         resetGameState();
         return "Game has been restarted.";
     } else {
-        return "Unknown command. Type 'HELP' for options.";
+        // For unknown commands, return an empty string.
+        return "";
     }
 }
 

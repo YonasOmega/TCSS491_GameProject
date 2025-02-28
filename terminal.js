@@ -72,7 +72,7 @@ class Terminal {
             "Complete trials to move the ship closer to its destination.",
             "Fail three trials and the ship explodes!",
             "Good luck!",
-            "ATTEMPT TRIAL 1? [Y/N]"
+            "ATTEMPT TRIAL 1? [Y]"
         ];
         const delayBetweenLines = 700;
         let delay = 0;
@@ -95,7 +95,7 @@ class Terminal {
 
     postTrialInstructions() {
         this.history.push("Trial completed.");
-        this.history.push("Ready for next trial? [Y/N]");
+        this.history.push("Ready for next trial? [Y]");
         this.gameState = "trial-confirmation";
     }
 
@@ -208,11 +208,8 @@ class Terminal {
                     this.game.startTrial(this.game.currentTrial);
                     this.game.currentTrial++; // Increment AFTER starting trial
                     this.gameState = "terminal";
-                } else if (command === "n") {
-                    this.history.push("Trial canceled. Awaiting further instructions...");
-                    this.gameState = "terminal";
                 } else {
-                    this.history.push("Invalid input. Please type Y, N, or a minigame name.");
+                    this.history.push("Invalid input. Please type Y to continue.");
                 }
             }
             this.input = "";
