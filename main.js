@@ -1,37 +1,25 @@
-const gameEngine = new GameEngine();
-const ASSET_MANAGER = new AssetManager();
+import { GameEngine } from "./gameEngine.js";
+import { Terminal } from "./terminal.js";
+import { handleCommand, resetGameState } from "./commandHandler.js";
 
-gameEngine.score = 0;
+// Get the canvas from index.html
+const canvas = document.getElementById("terminalCanvas");
+if (!canvas) {
+    console.error("❌ ERROR: <canvas id='terminalCanvas'> is missing in index.html!");
+}
 
-gameEngine.createTarget = function() {
-	const x = randomInt(1024 - 2 * 15) + 15; // Ensure target is fully within canvas
-	const y = randomInt(768 - 2 * 15) + 15;
-	const target = new Target(this, x, y);
-	this.addEntity(target);
-};
+const ctx = canvas.getContext("2d");
 
-ASSET_MANAGER.downloadAll(() => {
-	const canvas = document.getElementById("gameWorld");
-	const ctx = canvas.getContext("2d");
+// Create game engine
+const gameEngine = new GameEngine({ debugging: true });
+gameEngine.init(ctx);
 
-	gameEngine.init(ctx);
-	gameEngine.start();
+// Add terminal entity
+// console.log("making terminal from main.js");
+// const terminal = new Terminal(gameEngine);
+// gameEngine.addEntity(terminal);
 
-	for (let i = 0; i < 5; i++) {
-		gameEngine.createTarget();
-	}
+// Start the game loop
+gameEngine.start();
 
-	const scoreDisplay = document.createElement('div');
-	scoreDisplay.id = 'score';
-	scoreDisplay.textContent = 'Score: 0';
-	document.body.insertBefore(scoreDisplay, canvas);
-
-	// Override the update function
-	gameEngine.update = function() {
-		GameEngine.prototype.update.call(this); // Call original update
-		scoreDisplay.textContent = 'Score: ' + this.score;
-	};
-});
-
-
-// util.js, index.html, assetmanager.js, gameengine.js, timer.js (No changes)
+console.log("✅ main.js is running");
