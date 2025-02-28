@@ -11,6 +11,7 @@ if (!canvas) {
 const ctx = canvas.getContext("2d");
 
 // Create game engine
+// asdf
 const gameEngine = new GameEngine({ debugging: true });
 gameEngine.init(ctx);
 
