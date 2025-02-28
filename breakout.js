@@ -16,6 +16,10 @@ class BreakoutGame {
         this.INITIAL_BALL_SPEED = 10;
         this.SPEED_INCREMENT = 0.2;    // Reduced speed increment for smoother difficulty progression
 
+        // New win condition: break 10 blocks to win
+        this.BLOCKS_TO_WIN = 10;
+        this.blocksDestroyed = 0;
+
         // Game state
         this.state = {
             score: 0,
@@ -52,6 +56,21 @@ class BreakoutGame {
         // Initialize text effects
         this.messages = [];
         this.particles = [];
+
+        // Progress indicator properties
+        this.progressIndicator = {
+            x: 30,
+            y: 80,
+            width: 20,
+            height: this.ctx.canvas.height - 160,
+            fillPercent: 0,
+            shake: {
+                active: false,
+                intensity: 0,
+                duration: 0,
+                timer: 0
+            }
+        };
 
         // Bind event handlers
         this.keydownHandler = this.handleKeydown.bind(this);
@@ -128,6 +147,13 @@ class BreakoutGame {
         }
     }
 
+    triggerProgressShake() {
+        this.progressIndicator.shake.active = true;
+        this.progressIndicator.shake.intensity = 5;
+        this.progressIndicator.shake.duration = 0.5;
+        this.progressIndicator.shake.timer = this.progressIndicator.shake.duration;
+    }
+
     updatePaddle() {
         if (this.state.keys.left && this.state.paddle.x > 0) {
             this.state.paddle.x -= this.PADDLE_SPEED;
@@ -161,9 +187,21 @@ class BreakoutGame {
 
                 if (block.hitPoints <= 0) {
                     block.active = false;
+                    this.blocksDestroyed++;
+
+                    // Update progress indicator
+                    this.progressIndicator.fillPercent = this.blocksDestroyed / this.BLOCKS_TO_WIN;
+                    this.triggerProgressShake();
+
                     this.state.score += 100 * this.state.multiplier;
                     this.addMessage(`+${100 * this.state.multiplier}`, block.x + block.width / 2, block.y);
                     this.addParticles(closest.x, closest.y, 15, block.color);
+
+                    // Check win condition - player has destroyed enough blocks
+                    if (this.blocksDestroyed >= this.BLOCKS_TO_WIN) {
+                        this.state.gameOver = true;
+                        this.game.endMinigame(`You won! Destroyed ${this.blocksDestroyed} blocks!`, true);
+                    }
                 } else {
                     // Visual feedback for hit but not destroyed
                     this.addParticles(closest.x, closest.y, 5, block.color);
@@ -180,12 +218,6 @@ class BreakoutGame {
                     this.state.ball.dy *= -1;
                 }
             }
-        }
-
-        // Check win condition
-        if (this.state.blocks.every(block => !block.active)) {
-            this.state.gameOver = true;
-            this.game.endMinigame("You won Breakout!", true);
         }
     }
 
@@ -278,6 +310,17 @@ class BreakoutGame {
         }
     }
 
+    updateProgressShake(deltaTime) {
+        if (this.progressIndicator.shake.active) {
+            this.progressIndicator.shake.timer -= deltaTime;
+            this.progressIndicator.shake.intensity *= 0.9; // Decrease intensity over time
+
+            if (this.progressIndicator.shake.timer <= 0) {
+                this.progressIndicator.shake.active = false;
+            }
+        }
+    }
+
     update() {
         // Calculate delta time
         const now = Date.now();
@@ -303,6 +346,7 @@ class BreakoutGame {
         this.updatePaddle();
         this.updateMessages(deltaTime);
         this.updateParticles(deltaTime);
+        this.updateProgressShake(deltaTime);
     }
 
     draw() {
@@ -336,6 +380,48 @@ class BreakoutGame {
                 this.ctx.stroke();
             }
         });
+
+        // Draw progress indicator with shake effect
+        this.ctx.save();
+
+        let shakeX = 0;
+        let shakeY = 0;
+
+        if (this.progressIndicator.shake.active) {
+            shakeX = (Math.random() - 0.5) * this.progressIndicator.shake.intensity;
+            shakeY = (Math.random() - 0.5) * this.progressIndicator.shake.intensity;
+        }
+
+        // Draw progress indicator background
+        this.ctx.fillStyle = "rgba(0, 255, 0, 0.2)";
+        this.ctx.fillRect(
+            this.progressIndicator.x + shakeX,
+            this.progressIndicator.y + shakeY,
+            this.progressIndicator.width,
+            this.progressIndicator.height
+        );
+
+        // Draw progress fill
+        const fillHeight = this.progressIndicator.height * Math.min(1, this.progressIndicator.fillPercent);
+        this.ctx.fillStyle = "#0F0";
+        this.ctx.fillRect(
+            this.progressIndicator.x + shakeX,
+            this.progressIndicator.y + this.progressIndicator.height - fillHeight + shakeY,
+            this.progressIndicator.width,
+            fillHeight
+        );
+
+        // Draw progress text
+        this.ctx.font = "16px monospace";
+        this.ctx.fillStyle = "#0F0";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText(
+            `${this.blocksDestroyed}/${this.BLOCKS_TO_WIN}`,
+            this.progressIndicator.x + this.progressIndicator.width / 2 + shakeX,
+            this.progressIndicator.y - 10 + shakeY
+        );
+        this.ctx.textAlign = "left";
+        this.ctx.restore();
 
         // Draw paddle with glow effect
         this.ctx.shadowBlur = 10;
@@ -397,6 +483,7 @@ class BreakoutGame {
             this.ctx.textAlign = "center";
             this.ctx.fillText("Press SPACE to launch", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2);
             this.ctx.fillText("Use LEFT/RIGHT arrows to move", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 30);
+            this.ctx.fillText(`Break ${this.BLOCKS_TO_WIN} blocks to win!`, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 60);
             this.ctx.textAlign = "left";
         }
 
@@ -411,6 +498,7 @@ class BreakoutGame {
             this.ctx.fillText("Game Over", this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - 20);
             this.ctx.font = "24px monospace";
             this.ctx.fillText(`Final Score: ${this.state.score}`, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 20);
+            this.ctx.fillText(`Blocks Destroyed: ${this.blocksDestroyed}/${this.BLOCKS_TO_WIN}`, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + 50);
             this.ctx.textAlign = "left";
         }
 
