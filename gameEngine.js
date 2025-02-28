@@ -65,7 +65,7 @@ class GameEngine {
         // Check if three or more failures have occurred
         if (this.trialManager.failureCount >= 3) {
             console.log("Game Over: Too many failures.");
-            this.currentGameOverScreen = new GameOverScreen(this, "Game Over! You've failed three times. Please restart.");
+            this.currentGameOverScreen = new GameOverScreen(this, "Game Over! You've failed three times.");
             this.addEntity(this.currentGameOverScreen);
             return;
         }
