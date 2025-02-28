@@ -285,22 +285,16 @@ class Blasteroid {
             return; // Don't update game state while on title screen
         }
         
-        // WIN CONDITION: If score > 20 (win condition) and the game isn't over, trigger win.
-        if (this.score > 20 && !this.gameOver) {
-            this.gameOver = true;
-            this.gameStarted = false;
-            setTimeout(() => {
-                this.endMinigame(`Trial passed! You've destroyed ${this.score} asteroids!`, true);
-            }, 100);
-            return;
-        }
-        
-        // LOSS CONDITION: If lives are 0 (and win condition hasn't been met), trigger game over.
+        // LOSS CONDITION: If lives are 0 (game ends), then check if score > 20.
         if (this.lives <= 0 && !this.gameOver) {
             this.gameOver = true;
             this.gameStarted = false;
             setTimeout(() => {
-                this.endMinigame(`Game Over! You've destroyed ${this.score} asteroids!`, false);
+                if (this.score > 20) {
+                    this.endMinigame(`Trial passed! You've destroyed ${this.score} asteroids!`, true);
+                } else {
+                    this.endMinigame(`Game Over! You've destroyed ${this.score} asteroids!`, false);
+                }
             }, 100);
             return;
         }

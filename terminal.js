@@ -184,6 +184,10 @@ class Terminal {
         event.preventDefault();
         if (event.key === "Enter") {
             const command = this.input.trim().toLowerCase();
+            // Push the user's command into history so it is preserved.
+            if (command !== "") {
+                this.history.push("> " + this.input.trim());
+            }
             if (this.gameState !== "instructions") {
                 let response = handleCommand(command);
                 if (Array.isArray(response) && response[1].startsWith("start_")) {
