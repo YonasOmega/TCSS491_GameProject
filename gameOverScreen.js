@@ -46,16 +46,21 @@ class GameOverScreen {
         } else {
             ctx.fillStyle = "rgb(0, 255, 0)";
         }
+        
+        // Center text horizontally (and adjust vertical positions as needed)
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        
         ctx.font = "48px monospace";
-        ctx.fillText(this.message, ctx.canvas.width / 2 - 150, ctx.canvas.height / 2 - 50);
+        ctx.fillText(this.message, ctx.canvas.width / 2, ctx.canvas.height / 2 - 50);
 
         if (this.showMessage) {
             ctx.font = "24px monospace";
             // For win or failure screens, instruct the player to press 'T' to restart.
             if (this.isWin || this.isFailure) {
-                ctx.fillText("Press 'T' to restart", ctx.canvas.width / 2 - 150, ctx.canvas.height / 2 + 50);
+                ctx.fillText("Press 'T' to restart", ctx.canvas.width / 2, ctx.canvas.height / 2 + 50);
             } else {
-                ctx.fillText("Press 'T' to return to terminal", ctx.canvas.width / 2 - 150, ctx.canvas.height / 2 + 50);
+                ctx.fillText("Press 'T' to return to terminal", ctx.canvas.width / 2, ctx.canvas.height / 2 + 50);
             }
         }
     }

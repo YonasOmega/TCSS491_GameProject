@@ -12,9 +12,9 @@ class BreakoutGame {
         this.BALL_RADIUS = 8;
         this.PADDLE_WIDTH = 100;
         this.PADDLE_HEIGHT = 15;
-        this.PADDLE_SPEED = 10;        // Slightly faster paddle
-        this.INITIAL_BALL_SPEED = 5;
-        this.SPEED_INCREMENT = 0.1;    // Reduced speed increment for smoother difficulty progression
+        this.PADDLE_SPEED = 15;        // Slightly faster paddle
+        this.INITIAL_BALL_SPEED = 10;
+        this.SPEED_INCREMENT = 0.2;    // Reduced speed increment for smoother difficulty progression
 
         // Game state
         this.state = {

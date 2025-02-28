@@ -152,10 +152,10 @@ class GameEngine {
         if (this.options.debugging) {
             window.addEventListener("keydown", (event) => {
                 if (this.currentMinigame) {
-                    if (event.key === "1") {
+                    if (event.key === "{") {
                         console.log("Debug: Simulating minigame success");
                         this.endMinigame("Trial passed (debug)", true);
-                    } else if (event.key === "2") {
+                    } else if (event.key === "}") {
                         console.log("Debug: Simulating minigame failure");
                         this.endMinigame("Trial failed (debug)", false);
                     }

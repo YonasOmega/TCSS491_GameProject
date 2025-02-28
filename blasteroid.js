@@ -108,15 +108,16 @@ class Blasteroid {
         this.achievementTimestamp = 0;
         this.targets = []; // Array to hold active targets
         this.lastSpawnTime = Date.now();
-        this.SPAWN_INTERVAL = 765; // milliseconds  ********TIME BETWEEN SPAWNS*******
+        this.SPAWN_INTERVAL = 765; // milliseconds ********TIME BETWEEN SPAWNS*******
         this.stars = []; // Array to hold star objects
         this.generateStarfield(100); // Generate 100 stars
+
         this.cursorImage = new Image();
         this.cursorImage.src = './assets/red_crosshair.png'; // Adjust the path as needed
         this.cursorImage.onload = () => {
-        // Once image is loaded, set up the custom cursor
-        this.setupCustomCursor();
-};
+            // Once image is loaded, set up the custom cursor
+            this.setupCustomCursor();
+        };
 
         // Load the comet image directly
         this.cometImage = new Image();
@@ -284,11 +285,26 @@ class Blasteroid {
             return; // Don't update game state while on title screen
         }
         
-        // Check if achievement message should be removed
-        if (this.showAchievement && Date.now() - this.achievementTimestamp > 1500) {
-            this.hideAchievementMessage();
+        // WIN CONDITION: If score > 20 (win condition) and the game isn't over, trigger win.
+        if (this.score > 20 && !this.gameOver) {
+            this.gameOver = true;
+            this.gameStarted = false;
+            setTimeout(() => {
+                this.endMinigame(`Trial passed! You've destroyed ${this.score} asteroids!`, true);
+            }, 100);
+            return;
         }
         
+        // LOSS CONDITION: If lives are 0 (and win condition hasn't been met), trigger game over.
+        if (this.lives <= 0 && !this.gameOver) {
+            this.gameOver = true;
+            this.gameStarted = false;
+            setTimeout(() => {
+                this.endMinigame(`Game Over! You've destroyed ${this.score} asteroids!`, false);
+            }, 100);
+            return;
+        }
+
         // Spawn new targets at defined intervals
         if (this.gameStarted && !this.gameOver) {
             const currentTime = Date.now();
@@ -305,15 +321,12 @@ class Blasteroid {
         // Remove targets flagged for removal
         this.targets = this.targets.filter(target => !target.removeFromWorld);
 
-        // Check for game over condition
-        if (this.lives <= 0 && !this.gameOver) {
-            this.gameOver = true;
-            this.gameStarted = false;
-            setTimeout(() => {
-                this.endMinigame(`Game Over! You've destroyed ${this.score} asteroids!`);
-            }, 100);
+        // Check for achievement message removal
+        if (this.showAchievement && Date.now() - this.achievementTimestamp > 1500) {
+            this.hideAchievementMessage();
         }
     }
+    
     generateStarfield(numStars) {
         const canvas = this.game.ctx.canvas;
         for (let i = 0; i < numStars; i++) {
@@ -326,6 +339,7 @@ class Blasteroid {
             });
         }
     }
+    
     drawStarfield(ctx) {
         for (let star of this.stars) {
             // Make stars twinkle by changing brightness
@@ -339,6 +353,7 @@ class Blasteroid {
             ctx.fillRect(star.x, star.y, star.size, star.size);
         }
     }
+    
     draw(ctx) {
         // Clear the canvas with a background color
         ctx.fillStyle = "#000";
@@ -370,9 +385,9 @@ class Blasteroid {
     }
     
     // Method to end minigame and pass a message to the parent game
-    endMinigame(message) {
+    endMinigame(message, wasSuccess) {
         if (typeof this.game.endMinigame === "function") {
-            this.game.endMinigame(message);
+            this.game.endMinigame(message, wasSuccess);
         } else {
             console.log("Game Over:", message);
             // If we're testing without a parent game, show an end screen
@@ -418,8 +433,8 @@ class Blasteroid {
         scoreText.style.color = '#0f0';
         scoreText.style.marginBottom = '40px';
         this.endContainer.appendChild(scoreText);
-        
     }
+    
     setupCustomCursor() {
         const canvas = this.game.ctx.canvas;
         const container = canvas.parentNode;
@@ -440,7 +455,7 @@ class Blasteroid {
         this.cursor.style.zIndex = '1000';
         this.cursor.style.transform = 'translate(-50%, -50%)'; // Center the cursor
         
-        // Important: Initially hide the cursor until mouse movement
+        // Initially hide the cursor until mouse movement
         this.cursor.style.display = 'none';
         
         container.appendChild(this.cursor);
@@ -461,13 +476,6 @@ class Blasteroid {
         canvas.addEventListener('mouseleave', () => {
             this.cursor.style.display = 'none';
         });
-        
-        // Don't automatically show cursor when mouse enters canvas
-        // Only show it when the mouse actually moves inside the canvas
-        canvas.addEventListener('mouseenter', () => {
-            // Don't set display to 'block' here
-            // Wait for mousemove event to show cursor
-        });
     }
     
     // Remove end screen
@@ -476,6 +484,7 @@ class Blasteroid {
             this.endContainer.parentNode.removeChild(this.endContainer);
         }
     }
+    
     removeCursor() {
         if (this.cursor && this.cursor.parentNode) {
             this.cursor.parentNode.removeChild(this.cursor);
