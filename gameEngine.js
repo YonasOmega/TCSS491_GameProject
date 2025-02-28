@@ -78,6 +78,11 @@ class GameEngine {
             return;
         }
     
+        // If the trial failed but it's not yet game over, change the message
+        if (!wasSuccess) {
+            resultMessage = "Trial failed. Press 'T' to return to terminal.";
+        }
+    
         // Otherwise, show the trial result screen.
         this.currentGameOverScreen = new GameOverScreen(this, resultMessage);
         this.addEntity(this.currentGameOverScreen);
