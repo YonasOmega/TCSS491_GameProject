@@ -1,0 +1,88 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"0dbea367-6836-4aa8-9847-a3214fe5c502\" name=\"Changes\" comment=\"Here is breakout.js\" />\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"CSS File\" />\r\n        <option value=\"JavaScript File\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"big-merge\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n    <option name=\"SWAP_SIDES_IN_COMPARE_BRANCHES\" value=\"true\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;history&quot;: [\r\n    {\r\n      &quot;author&quot;: &quot;JianAzul&quot;\r\n    },\r\n    {\r\n      &quot;state&quot;: &quot;CLOSED&quot;\r\n    }\r\n  ],\r\n  &quot;lastFilter&quot;: {}\r\n}</component>\r\n  <component name=\"GitHubPullRequestState\">{\r\n  &quot;prStates&quot;: [\r\n    {\r\n      &quot;id&quot;: {\r\n        &quot;id&quot;: &quot;PR_kwDONspMKs6JRazK&quot;,\r\n        &quot;number&quot;: 1\r\n      },\r\n      &quot;lastSeen&quot;: 1738544039403\r\n    }\r\n  ]\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/YonasOmega/SameDayDelivery.git&quot;,\r\n    &quot;accountId&quot;: &quot;ba8789e6-2af7-4f0d-8c6e-f4ef402b5f54&quot;\r\n  }\r\n}</component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 0\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2sJBC59vUTSizcYPudpEiGCyOL1\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"JavaScript Debug.index.html.executor\": \"Run\",\r\n    \"Node.js.main.js.executor\": \"Run\",\r\n    \"Node.js.typinggame.js.executor\": \"Run\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"RunOnceActivity.git.unshallow\": \"true\",\r\n    \"git-widget-placeholder\": \"big-merge\",\r\n    \"ignore.virus.scanning.warn.message\": \"true\",\r\n    \"list.type.of.created.stylesheet\": \"CSS\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"0dbea367-6836-4aa8-9847-a3214fe5c502\" name=\"Changes\" comment=\"\" />\r\n      <created>1738163667459</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1738163667459</updated>\r\n      <workItem from=\"1738163669232\" duration=\"10471000\" />\r\n      <workItem from=\"1738531319599\" duration=\"5910000\" />\r\n      <workItem from=\"1738543808183\" duration=\"22513000\" />\r\n      <workItem from=\"1739652964047\" duration=\"5512000\" />\r\n      <workItem from=\"1740363576827\" duration=\"2024000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Typeing game\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1738167804158</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1738167804158</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"Typeing game\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1738168414771</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1738168414771</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"Typing game\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1738168625183</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1738168625183</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00004\" summary=\"looping sound\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1738542950508</created>\r\n      <option name=\"number\" value=\"00004\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1738542950508</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00005\" summary=\"looping sound\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1738544366728</created>\r\n      <option name=\"number\" value=\"00005\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1738544366728</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00006\" summary=\"TypingGame\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1738563962248</created>\r\n      <option name=\"number\" value=\"00006\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1738563962248</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00007\" summary=\"deleting testfile\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1738695937882</created>\r\n      <option name=\"number\" value=\"00007\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1738695937882</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00008\" summary=\"pushed shelf\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1738696021881</created>\r\n      <option name=\"number\" value=\"00008\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1738696021881</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00009\" summary=\"gitignore\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1738696047669</created>\r\n      <option name=\"number\" value=\"00009\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1738696047669</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00010\" summary=\"Here is the fix to typingGame.js\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1738923553016</created>\r\n      <option name=\"number\" value=\"00010\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1738923553016</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00011\" summary=\"Here is breakout.js\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1739653780294</created>\r\n      <option name=\"number\" value=\"00011\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00011\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1739653780294</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"12\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Typeing game\" />\r\n    <MESSAGE value=\"Typing game\" />\r\n    <MESSAGE value=\"looping sound\" />\r\n    <MESSAGE value=\"TypingGame\" />\r\n    <MESSAGE value=\"deleting testfile\" />\r\n    <MESSAGE value=\"pushed shelf\" />\r\n    <MESSAGE value=\"gitignore\" />\r\n    <MESSAGE value=\"Here is the fix to typingGame.js\" />\r\n    <MESSAGE value=\"Here is breakout.js\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Here is breakout.js\" />\r\n  </component>\r\n</project>
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 68a4d0c9a264f80bb2592c44005a1f3821b6f3ed)
++++ b/.idea/workspace.xml	(date 1740374597863)
+@@ -4,7 +4,9 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="0dbea367-6836-4aa8-9847-a3214fe5c502" name="Changes" comment="Here is breakout.js" />
++    <list default="true" id="0dbea367-6836-4aa8-9847-a3214fe5c502" name="Changes" comment="Putting Assets inside atleast">
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++    </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -63,24 +65,24 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "JavaScript Debug.index.html.executor": "Run",
+-    "Node.js.main.js.executor": "Run",
+-    "Node.js.typinggame.js.executor": "Run",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "RunOnceActivity.git.unshallow": "true",
+-    "git-widget-placeholder": "big-merge",
+-    "ignore.virus.scanning.warn.message": "true",
+-    "list.type.of.created.stylesheet": "CSS",
+-    "node.js.detected.package.eslint": "true",
+-    "node.js.detected.package.tslint": "true",
+-    "node.js.selected.package.eslint": "(autodetect)",
+-    "node.js.selected.package.tslint": "(autodetect)",
+-    "nodejs_package_manager_path": "npm",
+-    "vue.rearranger.settings.migration": "true"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
++    &quot;Node.js.main.js.executor&quot;: &quot;Run&quot;,
++    &quot;Node.js.typinggame.js.executor&quot;: &quot;Run&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;big-merge&quot;,
++    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
++    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
++    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
++    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
++    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
++    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
++    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
++    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+   }
+-}]]></component>
++}</component>
+   <component name="SharedIndexes">
+     <attachedChunks>
+       <set>
+@@ -190,7 +192,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1739653780294</updated>
+     </task>
+-    <option name="localTasksCounter" value="12" />
++    <task id="LOCAL-00012" summary="Putting Assets inside atleast">
++      <option name="closed" value="true" />
++      <created>1740374292958</created>
++      <option name="number" value="00012" />
++      <option name="presentableId" value="LOCAL-00012" />
++      <option name="project" value="LOCAL" />
++      <updated>1740374292958</updated>
++    </task>
++    <option name="localTasksCounter" value="13" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -206,6 +216,7 @@
+     <MESSAGE value="gitignore" />
+     <MESSAGE value="Here is the fix to typingGame.js" />
+     <MESSAGE value="Here is breakout.js" />
+-    <option name="LAST_COMMIT_MESSAGE" value="Here is breakout.js" />
++    <MESSAGE value="Putting Assets inside atleast" />
++    <option name="LAST_COMMIT_MESSAGE" value="Putting Assets inside atleast" />
+   </component>
+ </project>
+\ No newline at end of file
