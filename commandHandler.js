@@ -19,7 +19,7 @@ let routes = {
     "typing": 100,
     "breakout": 100,
     "blasteroid": 100,
-    "chess": 100,
+    "memory": 100,
     "riddle": 100
 };
 
@@ -45,8 +45,8 @@ function handleCommand(command) {
         return ["Starting blasteroid minigame...", "start_blasteroid"];
     } else if (lowerCommand === "purpose") {
         return "AAAAGGGGHHHH";
-    } else if (lowerCommand === "chess") {
-        return ["Starting chess minigame...", "start_chess"];
+    } else if (lowerCommand === "memory") {
+        return ["Starting memory minigame...", "start_memory"];
     } else if (lowerCommand === "riddle") {
         return ["Starting riddle minigame...", "start_riddle"];
     } else if (lowerCommand.startsWith("travel ")) {
