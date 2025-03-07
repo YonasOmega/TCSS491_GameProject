@@ -7,6 +7,7 @@ import { ChessGame } from "./chess.js";
 import { RiddleGame } from "./riddle.js";
 import { GameOverScreen } from "./gameOverScreen.js";
 import { TrialManager } from "./trialManager.js";
+import { MemoryGame } from "./memoryGame.js";
 
 class GameEngine {
     constructor(options) {
@@ -71,7 +72,7 @@ class GameEngine {
         }
     
         // Check win condition: if the player has completed all four trials
-        if (this.currentTrial > 4) {
+        if (this.currentTrial > 5) {
             console.log("Game Won: All trials completed.");
             this.currentGameOverScreen = new GameOverScreen(this, "Congratulations! You have won the game.");
             this.addEntity(this.currentGameOverScreen);
@@ -196,14 +197,14 @@ class GameEngine {
         this.currentMinigame = new Blasteroid(this);
         this.currentMinigameType = "blasteroid";
     }
-    // Start Chess Game
-    startChessGame() {
-        console.log("🚀 Starting Chess Minigame...");
+    // Start Memory Game
+    startMemoryGame() {
+        console.log("🚀 Starting Memory Minigame...");
         if (this.currentTerminal) {
             this.currentTerminal.removeListeners();
         }
-        this.currentMinigame = new ChessGame(this);
-        this.currentMinigameType = "chess";
+        this.currentMinigame = new MemoryGame(this);
+        this.currentMinigameType = "memory";
     }
     // Start Riddle Game
     startRiddleGame() {
@@ -230,6 +231,9 @@ class GameEngine {
                 break;
             case 4:
                 this.startRiddleGame();
+                break;
+            case 5:
+                this.startMemoryGame();
                 break;
             default:
                 this.startTypingGame();
