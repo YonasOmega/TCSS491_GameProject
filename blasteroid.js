@@ -33,6 +33,7 @@ class Target {
                 if (!this.scored) {
                     this.game.lives--;
                     this.scored = true;
+                    this.game.triggerRedFlash();
                 }
                 this.removeFromWorld = true;
             }
@@ -111,6 +112,9 @@ class Blasteroid {
         this.SPAWN_INTERVAL = 765; // milliseconds ********TIME BETWEEN SPAWNS*******
         this.stars = []; // Array to hold star objects
         this.generateStarfield(100); // Generate 100 stars
+        this.showRedFlash = false;
+        this.flashDuration = 150; // milliseconds
+        this.flashStartTime = 0;
 
         this.cursorImage = new Image();
         this.cursorImage.src = './assets/red_crosshair.png'; // Adjust the path as needed
@@ -128,6 +132,10 @@ class Blasteroid {
         
         // Create UI for the title screen
         this.initTitleScreen();
+    }
+    triggerRedFlash() {
+        this.showRedFlash = true;
+        this.flashStartTime = Date.now();
     }
     
     // Initialize title screen UI
@@ -284,6 +292,11 @@ class Blasteroid {
         if (this.showTitleScreen) {
             return; // Don't update game state while on title screen
         }
+
+            // Handle red flash timing
+    if (this.showRedFlash && Date.now() - this.flashStartTime > this.flashDuration) {
+        this.showRedFlash = false;
+    }
         
         // LOSS CONDITION: If lives are 0 (game ends), then check if score > 20.
         if (this.lives <= 0 && !this.gameOver) {
@@ -364,6 +377,12 @@ class Blasteroid {
         for (let target of this.targets) {
             if (typeof target.draw === "function") target.draw(ctx);
         }
+            // Draw red flash overlay when a life is lost
+    if (this.showRedFlash) {
+        ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
+
     
         // Draw UI: display score and lives
         ctx.fillStyle = "#0f0"; // Neon green
