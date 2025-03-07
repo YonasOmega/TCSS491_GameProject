@@ -173,7 +173,7 @@ class Blasteroid {
         this.startButton.style.fontFamily = 'monospace';        
         // Create instruction set
         this.instructionText = document.createElement('p');
-        this.instructionText.textContent = 'Shoot the asteroids!';
+        this.instructionText.textContent = 'Shoot the asteroids! Destroy 20 to win!';
         this.instructionText.style.fontFamily = 'monospace';
         this.instructionText.style.fontSize = '20px';
         this.instructionText.style.color = '#0f0'; // Neon green
