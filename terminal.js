@@ -247,6 +247,10 @@ class Terminal {
                     console.log("Starting Riddle Game from terminal");
                     this.game.startRiddleGame();
                     break;
+                case "start_credits":
+                    console.log("Starting Credits from terminal");
+                    this.game.startCredits();
+                    break;
                 default:
                     console.warn("⚠️ Unknown game start state:", state);
             }

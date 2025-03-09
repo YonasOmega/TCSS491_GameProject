@@ -8,6 +8,7 @@ import { GameOverScreen } from "./gameOverScreen.js";
 import { TrialManager } from "./trialManager.js";
 import { MemoryGame } from "./memoryGame.js"
 import { AsteroidGame } from "./asteroid.js";
+import { CreditsScreen } from "./credits.js";
 
 class GameEngine {
     constructor(options) {
@@ -24,6 +25,7 @@ class GameEngine {
         this.currentTrial = 1;
         // Create a trial manager instance to track successes and failures.
         this.trialManager = new TrialManager(this);
+        this.creditsScreen = null; // For the credits screen
     }
 
     init(ctx) {
@@ -88,7 +90,35 @@ class GameEngine {
         this.currentGameOverScreen = new GameOverScreen(this, resultMessage);
         this.addEntity(this.currentGameOverScreen);
     }
-    
+    // Start the Credits screen
+    startCredits() {
+        console.log("🚀 Starting Credits Sequence...");
+        // Remove Terminal listeners if active
+        if (this.currentTerminal) {
+            this.currentTerminal.removeListeners();
+        }
+        // Clear entities
+        this.entities = [];
+        // Create and start the credits screen
+        this.creditsScreen = new CreditsScreen(this);
+    }
+
+    // End the Credits screen and return to terminal
+    endCredits() {
+        console.log("🔄 Ending Credits Sequence...");
+        if (this.creditsScreen) {
+            this.creditsScreen.removeListeners();
+        }
+        this.creditsScreen = null;
+
+        // Clear canvas before returning to the terminal
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+
+        // Create a new Terminal instance (skip bootup)
+        this.currentTerminal = new Terminal(this, false);
+        this.addEntity(this.currentTerminal);
+    }
+
     endGameOverScreen() {
         console.log("🔄 Transitioning from Game Over Screen to Terminal...");
     
@@ -254,9 +284,11 @@ class GameEngine {
 
     draw() {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        if (this.currentMinigame) {
+        if (this.creditsScreen) {
+            // Draw the credits screen
+            this.creditsScreen.draw(this.ctx);
+        } else if (this.currentMinigame) {
             // Draw the active minigame
-            console.log("🚀 Drawing minigame!");
             this.currentMinigame.draw(this.ctx);
         } else {
             // Draw all entities (including Terminal)
@@ -265,9 +297,11 @@ class GameEngine {
             }
         }
     }
-    
+
     update() {
-        if (this.currentMinigame) {
+        if (this.creditsScreen) {
+            this.creditsScreen.update();
+        } else if (this.currentMinigame) {
             this.currentMinigame.update();
         } else {
             for (let i = 0; i < this.entities.length; i++) {

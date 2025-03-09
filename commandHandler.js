@@ -28,7 +28,7 @@ function handleCommand(command) {
     const lowerCommand = command.toLowerCase();
 
     if (lowerCommand === "help") {
-        return "Commands: PURPOSE, TRAVEL [route], LIST, STATUS, CLEAR, HELP, EXIT, RESTART";
+        return "Commands: PURPOSE, TRAVEL [route], LIST, STATUS, CLEAR, CREDITS, HELP, EXIT, RESTART";
     } else if (lowerCommand === "list") {
         return Object.keys(routes).length > 0
             ? "Available routes: " + Object.keys(routes).join(", ")
@@ -49,6 +49,8 @@ function handleCommand(command) {
         return ["Starting memory minigame...", "start_memory"];
     } else if (lowerCommand === "riddle") {
         return ["Starting riddle minigame...", "start_riddle"];
+    } else if (lowerCommand === "credits") {
+        return ["Displaying credits...", "start_credits"];
     } else if (lowerCommand.startsWith("travel ")) {
         let route = command.split(" ")[1];
         if (routes[route]) {
