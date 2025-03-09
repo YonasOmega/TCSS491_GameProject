@@ -22,6 +22,7 @@ class CreditsScreen {
         // Credits text content
         this.title = "Void Terminal";
         this.subtitle = "the last OS";
+        this.subtitle = "PRESS ESC TO RETURN TO TERMINAL";
         this.credits = [
             "CREATED BY",
             "",
