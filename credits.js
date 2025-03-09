@@ -20,21 +20,21 @@ class CreditsScreen {
         this.initStars(200); // Create 200 stars
 
         // Credits text content
-        this.title = "SPACE ADVENTURE";
-        this.subtitle = "A CONSOLE ADVENTURE";
+        this.title = "Void Terminal";
+        this.subtitle = "the last OS";
         this.credits = [
             "CREATED BY",
             "",
-            "CAPTAIN JANEWAY",
+            "Dalton Milton",
             "",
-            "LEAD DEVELOPERS",
+            "Jian Azul",
             "",
-            "COMMANDER DATA",
-            "COMMANDER RIKER",
+            "Yonas Omega",
+            "",
             "",
             "SPECIAL THANKS",
             "",
-            "THE CREW OF THE ENTERPRISE",
+            "Katie Lowe",
             "AND YOU, THE PLAYER",
             "",
             "",
