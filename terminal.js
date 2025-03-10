@@ -6,6 +6,9 @@ class Terminal {
         this.game = game;
         this.canvas = document.getElementById("terminalCanvas");
         this.ctx = this.canvas.getContext("2d");
+        this.initializeBackgroundMusic();
+
+        
 
         // Set canvas dimensions to full screen (managed by CSS)
         this.canvas.width = window.innerWidth;
@@ -58,6 +61,31 @@ class Terminal {
         };
         window.addEventListener("keydown", this.keyListener);
     }
+// Add this method to initialize background music
+initializeBackgroundMusic() {
+    this.bgMusic = new Audio('./assets/terminal.mp3'); // Replace with your audio file path
+    this.bgMusic.preload = 'auto';
+    this.bgMusic.volume = 0.15; // Set volume (0.0 to 1.0)
+    this.bgMusic.loop = true; // Make it loop continuously
+    
+    // Auto-play when possible
+    const playPromise = this.bgMusic.play();
+    
+    // Handle potential play() promise rejection (autoplay policy)
+    if (playPromise !== undefined) {
+        playPromise.catch(error => {
+            console.log("Autoplay prevented. Adding click handler for music start:", error);
+            
+            // Add a one-time click handler to start music on first user interaction
+            const startMusicOnClick = () => {
+                this.bgMusic.play().catch(e => console.log("Still couldn't play audio:", e));
+                window.removeEventListener('click', startMusicOnClick);
+            };
+            
+            window.addEventListener('click', startMusicOnClick);
+        });
+    }
+}
 
     gameInstructions() {
         // Lock user input while instructions are printing.
@@ -178,6 +206,10 @@ class Terminal {
             this.cursorInterval = null;
         }
         window.removeEventListener("keydown", this.keyListener);
+        if (this.bgMusic) {
+            this.bgMusic.pause();
+            this.bgMusic = null;
+        }
     }
 
     handleInput(event) {

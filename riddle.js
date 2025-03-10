@@ -97,9 +97,29 @@ class RiddleGame {
         this.currentTime = this.questionTimer;
         this.lastTimestamp = 0;
         this.uiInitialized = false;
+        this.bgMusic = new Audio('./assets/riddle.mp3'); // Replace with your music file path
+        this.bgMusic.loop = true;
+        this.bgMusic.volume = 0.3;
+        this.playBackgroundMusic();
 
         // Initialize UI
         this.initUI();
+    }
+    playBackgroundMusic() {
+        const playPromise = this.bgMusic.play();
+        
+        // Handle autoplay restrictions
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                // Auto-play was prevented
+                // Add a one-time event listener for user interaction
+                const startAudio = () => {
+                    this.bgMusic.play();
+                    document.removeEventListener('click', startAudio);
+                };
+                document.addEventListener('click', startAudio);
+            });
+        }
     }
 
     getQuestions() {
@@ -463,6 +483,10 @@ class RiddleGame {
     removeListeners() {
         // Clean up event listeners
         this.removeUI();
+        if (this.bgMusic) {
+            this.bgMusic.pause();
+            this.bgMusic.currentTime = 0;
+        }
     }
 
     update() {

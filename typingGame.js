@@ -30,10 +30,11 @@ class TypingGame {
             bestTime: Infinity,
             worstTime: 0
         };
-
-        // Initialize audio
-        this.noiseAudio = new Audio('assets/noize.mp3');
-        this.noiseAudio.loop = true;
+            // Initialize background music
+        this.bgMusic = new Audio('assets/type.mp3'); 
+        this.bgMusic.loop = true;
+        this.bgMusic.volume = 0.3;
+        this.playBackgroundMusic();
 
         // Enhanced message system
         this.messageEffect = {
@@ -120,6 +121,26 @@ class TypingGame {
         
         // Track timing for sequence change
         this.lastSequenceChangeTime = 0;
+    }
+    playBackgroundMusic() {
+        const playPromise = this.bgMusic.play();
+        
+        // Handle potential play() promise rejection (autoplay policy)
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log("Autoplay prevented. Using first interaction to start music");
+                
+                // Use first interaction as a trigger for music
+                const startAudio = () => {
+                    this.bgMusic.play().catch(e => console.log("Still couldn't play audio:", e));
+                    document.removeEventListener('keydown', startAudio);
+                    document.removeEventListener('click', startAudio);
+                };
+                
+                document.addEventListener('keydown', startAudio);
+                document.addEventListener('click', startAudio);
+            });
+        }
     }
 
     generateNewSequence() {
@@ -421,9 +442,9 @@ handleKeyPress(event) {
     removeListeners() {
         console.log("🛑 Removing key event listeners...");
         window.removeEventListener("keydown", this.keyListener);
-        if (this.noiseAudio) {
-            this.noiseAudio.pause();
-            this.noiseAudio.currentTime = 0;
+        if (this.bgMusic) {
+            this.bgMusic.pause();
+            this.bgMusic.currentTime = 0;
         }
     }
 

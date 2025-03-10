@@ -79,7 +79,32 @@ class BreakoutGame {
 
         // Start the game timer
         this.lastTimestamp = Date.now();
+        this.bgMusic = new Audio('./assets/brick.mp3'); 
+        this.bgMusic.loop = true;
+        this.bgMusic.volume = 0.1;
+        this.playBackgroundMusic();
     }
+    playBackgroundMusic() {
+        const playPromise = this.bgMusic.play();
+        
+        // Handle potential play() promise rejection (autoplay policy)
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log("Autoplay prevented. Adding click listener for music start");
+                
+                // Use space key press as a trigger for music
+                const startAudioOnInput = () => {
+                    this.bgMusic.play().catch(e => console.log("Still couldn't play audio:", e));
+                    document.removeEventListener('keydown', startAudioOnInput);
+                    document.removeEventListener('click', startAudioOnInput);
+                };
+                
+                document.addEventListener('keydown', startAudioOnInput);
+                document.addEventListener('click', startAudioOnInput);
+            });
+        }
+    }
+    
 
     initializeBlocks() {
         this.state.blocks = [];
@@ -541,6 +566,10 @@ class BreakoutGame {
     removeListeners() {
         document.removeEventListener('keydown', this.keydownHandler);
         document.removeEventListener('keyup', this.keyupHandler);
+        if (this.bgMusic) {
+            this.bgMusic.pause();
+            this.bgMusic.currentTime = 0;
+        }
     }
 }
 
