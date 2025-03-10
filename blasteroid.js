@@ -131,11 +131,11 @@ class Blasteroid {
         };
         this.backgroundMusic = new Audio('./assets/blasteroid.mp3');
         this.backgroundMusic.loop = true;  // Make the music loop continuously
-        this.backgroundMusic.volume = 0.4; // Set volume to 40%
+        this.backgroundMusic.volume = 0.2; // Set volume to 20%
         
         // Load gun sound effect
         this.gunSound = new Audio('./assets/gun.mp3');
-        this.gunSound.volume = 0.6; // Set gun sound volume to 60%
+        this.gunSound.volume = 0.1; // Set gun sound volume to 60%
         
         // Create UI for the title screen
         this.initTitleScreen();
