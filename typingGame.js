@@ -8,7 +8,7 @@ class TypingGame {
         // Reduced time rewards
         this.increaseAmount = 1.8; // Decreased from 1.8
         // Increased wrong answer penalty
-        this.wrongPenalty = 1.8; // Increased from 1.8
+        this.wrongPenalty = 1.4; 
         this.currentSequence = "";
         this.playerInput = "";
         // Longer sequences to start with

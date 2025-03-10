@@ -41,12 +41,7 @@ class Xenomorph {
             }
         }
 
-        // Check for click detection
-        if (this.game.game.click && this.isClicked(this.game.game.click)) {
-            console.log("Xenomorph clicked!");
-            this.shrink();
-            this.game.game.click = null;
-        }
+
     }
 
     draw(ctx) {
