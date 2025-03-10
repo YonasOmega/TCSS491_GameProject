@@ -4,6 +4,10 @@ class MemoryGame {
         this.game = game;
         this.canvas = this.game.ctx.canvas;
         this.ctx = this.game.ctx;
+        this.bgMusic = new Audio('./assets/puzzle.mp3');
+        this.bgMusic.loop = true;  // Make the music loop continuously
+        this.bgMusic.volume = 0.4; // Set volume to 40%
+        this.playBackgroundMusic();
         
         // Retro computer theme colors
         this.colors = {
@@ -117,6 +121,29 @@ class MemoryGame {
         this.handleClick = this.handleClick.bind(this);
         this.canvas.addEventListener("click", this.handleClick);
     }
+    playBackgroundMusic() {
+        try {
+            // Using a promise to handle autoplay restrictions
+            const playPromise = this.bgMusic.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Autoplay prevented. User interaction required:", error);
+                    // You might want to add a "Click to play music" button if autoplay is blocked
+                });
+            }
+        } catch (e) {
+            console.log("Error playing background music:", e);
+        }
+    }
+    stopBackgroundMusic() {
+        try {
+            this.bgMusic.pause();
+            this.bgMusic.currentTime = 0;
+        } catch (e) {
+            console.log("Error stopping background music:", e);
+        }
+    }
     
     // Fisher-Yates shuffle
     shuffleArray(array) {
@@ -191,6 +218,7 @@ class MemoryGame {
                     // Check if all cards are matched → win condition
                     if (this.cards.every(card => card.matched)) {
                         this.endGame(true);
+                        this.stopBackgroundMusic();
                     }
                 }, 500);
             } else {
@@ -224,6 +252,7 @@ class MemoryGame {
     
     removeListeners() {
         this.canvas.removeEventListener("click", this.handleClick);
+        this.stopBackgroundMusic();
     }
     
     update() {
