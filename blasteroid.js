@@ -10,10 +10,10 @@ class Target {
         this.game = game;
         this.x = x;
         this.y = y;
-        this.maxRadius = 30;
+        this.maxRadius = 33;
         this.minRadius = 1;
         this.currentRadius = this.minRadius;
-        this.growthRate = 0.05; // Adjust growth rate as desired
+        this.growthRate = 0.125; // Adjust growth rate as desired
         this.growing = true;
         this.removeFromWorld = false;
         this.cometImage = cometImage; // Use the passed image
@@ -236,7 +236,7 @@ class Blasteroid {
             this.achievementContainer.style.fontSize = '16px';
             this.achievementContainer.style.textAlign = 'center';
             this.achievementContainer.style.zIndex = '1000';
-            this.achievementContainer.style.animation = 'fadeIn 0.3s';
+            this.achievementContainer.style.animation = 'fadeIn 1s';
             this.achievementContainer.textContent = message;
             
             container.appendChild(this.achievementContainer);
