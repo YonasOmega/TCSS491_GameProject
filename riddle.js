@@ -101,6 +101,7 @@ class RiddleGame {
         this.bgMusic.loop = true;
         this.bgMusic.volume = 0.3;
         this.playBackgroundMusic();
+        this.scoreToWin = 10;
 
         // Initialize UI
         this.initUI();
@@ -420,51 +421,68 @@ class RiddleGame {
         console.log("We created the answer buttons" + this.answersContainer.innerHTML);
     }
 
-    handleAnswer(userAnswer) {
-        if (this.gameOver) return;
+// Fix for handleAnswer method in RiddleGame class
+handleAnswer(userAnswer) {
+    if (this.gameOver) return;
 
-        console.log("Current question answer: " + this.currentQuestion.answers);
+    console.log(`Answer selected: ${userAnswer}`);
 
-
-        console.log(`Answer selected: ${userAnswer}`);
-
-        if (userAnswer === this.currentQuestion.correctAnswer) {
-            this.score++;
-            console.log("Correct answer!");
-            if (this.score >= 10) {                                       //SCORE TO WIN
-                this.gameOver = true;
-                this.removeUI();
-                setTimeout(() => {
-                    this.game.endMinigame("You've escaped the Xenomorph!");
-                }, 100);
-                return;
-            }
-        } else {
-            this.wrongAnswers++;
-            console.log("Wrong answer!");
-            this.xenomorph.grow(); // Grow Xenomorph on wrong answer
-            this.dangerFill.style.width = `${(this.wrongAnswers / 3) * 100}%`; // Update danger meter
-        }
-
-        this.currentQuestionIndex++;
-        if (this.currentQuestionIndex >= this.questions.length || this.wrongAnswers >= 3) {
+    if (userAnswer === this.currentQuestion.correctAnswer) {
+        this.score++;
+        console.log("Correct answer! Score: " + this.score);
+        
+        // Check win condition first, before moving to next question
+    if (this.score >= this.scoreToWin) {
+        console.log("Win condition met! Score: " + this.score);
+        this.gameOver = true;
+        this.removeUI();
+        setTimeout(() => {
+            this.game.endMinigame("You've escaped the Xenomorph!", true);
+        }, 100);
+        return;
+    }
+    } else {
+        this.wrongAnswers++;
+        console.log("Wrong answer! Wrong count: " + this.wrongAnswers);
+        this.xenomorph.grow(); // Grow Xenomorph on wrong answer
+        this.dangerFill.style.width = `${(this.wrongAnswers / 3) * 100}%`; // Update danger meter
+        
+        // Check lose condition
+        if (this.wrongAnswers >= 3) {
+            console.log("Lose condition met! Wrong answers: " + this.wrongAnswers);
             this.gameOver = true;
-            this.removeUI(); // Clear UI immediately
-            // Add a small delay before ending minigame to ensure cleanup completes
+            this.removeUI();
             setTimeout(() => {
-                if (this.wrongAnswers >= 3) {
-                    this.game.endMinigame("Xenomorph killed you! Trial failed.");
+                this.game.endMinigame("Xenomorph killed you! Trial failed.");
+            }, 100);
+            return; // Important to return here
+        }
+    }
+
+    // Move to next question only if game is still active
+    if (!this.gameOver) {
+        this.currentQuestionIndex++;
+        if (this.currentQuestionIndex >= this.questions.length) {
+            // Out of questions, but haven't won or lost yet
+            this.gameOver = true;
+            this.removeUI();
+            setTimeout(() => {
+                // Determine outcome based on score
+                if (this.score >= this.scoreToWin) {
+                    this.game.endMinigame(`You've escaped the Xenomorph! Score: ${this.score}`, true);
                 } else {
-                    this.game.endMinigame(`Trial completed! you've escaped the Xenomorph! Score: ${this.score}`);
+                    this.game.endMinigame(`Ran out of questions! Score: ${this.score}`, false);
                 }
             }, 100);
         } else {
+            // Continue with next question
             this.currentQuestion = this.questions[this.currentQuestionIndex];
             this.currentTime = this.questionTimer;
             this.lastTimestamp = performance.now();
             this.createAnswerButtons();
         }
     }
+}
 
     removeUI() {
         // Remove the UI container and all child elements

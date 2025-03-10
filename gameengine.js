@@ -74,7 +74,7 @@ class GameEngine {
         }
     
         // Check win condition: if the player has completed all four trials
-        if (this.currentTrial > 6) {
+        if (this.currentTrial > 5) {
             console.log("Game Won: All trials completed.");
             this.currentGameOverScreen = new GameOverScreen(this, "Congratulations! You have won the game.");
             this.addEntity(this.currentGameOverScreen);
