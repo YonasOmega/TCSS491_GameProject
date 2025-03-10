@@ -10,14 +10,14 @@ class BreakoutGame {
         this.BLOCK_HEIGHT = 20;
         this.BLOCK_PADDING = 10;
         this.BALL_RADIUS = 8;
-        this.PADDLE_WIDTH = 100;
+        this.PADDLE_WIDTH = 150;
         this.PADDLE_HEIGHT = 15;
-        this.PADDLE_SPEED = 15;        // Slightly faster paddle
-        this.INITIAL_BALL_SPEED = 10;
+        this.PADDLE_SPEED = 10;        // Slightly faster paddle
+        this.INITIAL_BALL_SPEED = 6;
         this.SPEED_INCREMENT = 0.2;    // Reduced speed increment for smoother difficulty progression
 
-        // New win condition: break 10 blocks to win
-        this.BLOCKS_TO_WIN = 10;
+        // New win condition: break 15 blocks to win
+        this.BLOCKS_TO_WIN = 15;
         this.blocksDestroyed = 0;
 
         // Game state
@@ -122,7 +122,7 @@ class BreakoutGame {
                     height: this.BLOCK_HEIGHT,
                     active: true,
                     color: colors[row % colors.length],
-                    hitPoints: this.BLOCK_ROWS - row // Make top rows tougher
+                    hitPoints: 1 
                 });
             }
         }
