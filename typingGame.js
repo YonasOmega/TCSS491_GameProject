@@ -476,7 +476,7 @@ handleKeyPress(event) {
             // Allow a short delay to show final state, then call endMinigame with success.
             setTimeout(() => {
                 this.game.endMinigame("Trial passed (typing game)", true);
-            }, 1500); // Longer delay to showcase victory
+            }, 1800); // Longer delay to showcase victory
             return;
         }
     

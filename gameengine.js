@@ -180,19 +180,19 @@ class GameEngine {
         window.addEventListener("keyup", (event) => (this.keys[event.key] = false));
 
         // Debugging keybinds: Quickly pass or fail a minigame using keys "1" and "2"
-        if (this.options.debugging) {
-            window.addEventListener("keydown", (event) => {
-                if (this.currentMinigame) {
-                    if (event.key === "{") {
-                        console.log("Debug: Simulating minigame success");
-                        this.endMinigame("Trial passed (debug)", true);
-                    } else if (event.key === "}") {
-                        console.log("Debug: Simulating minigame failure");
-                        this.endMinigame("Trial failed (debug)", false);
-                    }
-                }
-            });
-        }
+        // if (this.options.debugging) {
+        //     window.addEventListener("keydown", (event) => {
+        //         if (this.currentMinigame) {
+        //             if (event.key === "{") {
+        //                 console.log("Debug: Simulating minigame success");
+        //                 this.endMinigame("Trial passed (debug)", true);
+        //             } else if (event.key === "}") {
+        //                 console.log("Debug: Simulating minigame failure");
+        //                 this.endMinigame("Trial failed (debug)", false);
+        //             }
+        //         }
+        //     });
+        // }
     }
 
     addEntity(entity) {
