@@ -13,7 +13,7 @@ class Target {
         this.maxRadius = 33;
         this.minRadius = 1;
         this.currentRadius = this.minRadius;
-        this.growthRate = 0.125; // Adjust growth rate as desired
+        this.growthRate = 0.11; // Adjust growth rate as desired
         this.growing = true;
         this.removeFromWorld = false;
         this.cometImage = cometImage; // Use the passed image
