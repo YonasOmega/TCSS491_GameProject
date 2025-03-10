@@ -251,6 +251,9 @@ class Terminal {
                     console.log("Starting Credits from terminal");
                     this.game.startCredits();
                     break;
+                case "start_memory":
+                    this.game.startMemoryGame();
+                    break;
                 default:
                     console.warn("⚠️ Unknown game start state:", state);
             }

@@ -13,7 +13,7 @@ class Target {
         this.maxRadius = 30;
         this.minRadius = 1;
         this.currentRadius = this.minRadius;
-        this.growthRate = 0.15; // Adjust growth rate as desired
+        this.growthRate = 0.05; // Adjust growth rate as desired
         this.growing = true;
         this.removeFromWorld = false;
         this.cometImage = cometImage; // Use the passed image
@@ -129,6 +129,13 @@ class Blasteroid {
         this.cometImage.onerror = () => {
             console.error("Failed to load comet image!");
         };
+        this.backgroundMusic = new Audio('./assets/blasteroid.mp3');
+        this.backgroundMusic.loop = true;  // Make the music loop continuously
+        this.backgroundMusic.volume = 0.4; // Set volume to 40%
+        
+        // Load gun sound effect
+        this.gunSound = new Audio('./assets/gun.mp3');
+        this.gunSound.volume = 0.6; // Set gun sound volume to 60%
         
         // Create UI for the title screen
         this.initTitleScreen();
@@ -267,7 +274,24 @@ class Blasteroid {
         this.gameOver = false;
         this.targets = [];
         this.lastSpawnTime = Date.now();
+            // Start playing the background music
+    this.backgroundMusic.play().catch(error => {
+        console.log("Audio playback prevented by browser:", error);
+    });
+    
+    // Add click listener for gun sound
+    this.game.ctx.canvas.addEventListener('click', this.playGunSound.bind(this));
     }
+    // Method to play gun sound
+playGunSound() {
+    if (this.gameStarted && !this.gameOver) {
+        // Clone the audio to allow overlapping sounds
+        const gunSoundClone = this.gunSound.cloneNode();
+        gunSoundClone.play().catch(error => {
+            console.log("Gun sound playback prevented:", error);
+        });
+    }
+}
     
     // Remove the title screen UI
     removeTitleScreen() {
@@ -510,6 +534,14 @@ class Blasteroid {
         this.removeTitleScreen();
         this.hideAchievementMessage();
         this.removeCursor();
+            // Stop and clean up audio
+    if (this.backgroundMusic) {
+        this.backgroundMusic.pause();
+        this.backgroundMusic.currentTime = 0;
+    }
+    
+    // Remove click listener for gun sound
+    this.game.ctx.canvas.removeEventListener('click', this.playGunSound.bind(this));
         if (this.endContainer) {
             this.removeEndScreen();
         }
