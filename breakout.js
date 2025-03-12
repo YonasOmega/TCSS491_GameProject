@@ -12,9 +12,9 @@ class BreakoutGame {
         this.BALL_RADIUS = 8;
         this.PADDLE_WIDTH = 150;
         this.PADDLE_HEIGHT = 15;
-        this.PADDLE_SPEED = 10;        // Slightly faster paddle
-        this.INITIAL_BALL_SPEED = 6;
-        this.SPEED_INCREMENT = 0.2;    // Reduced speed increment for smoother difficulty progression
+        this.PADDLE_SPEED = 20;        // Slightly faster paddle
+        this.INITIAL_BALL_SPEED = 16;
+        this.SPEED_INCREMENT = 0.4;    // Reduced speed increment for smoother difficulty progression
 
         // New win condition: break 15 blocks to win
         this.BLOCKS_TO_WIN = 15;
@@ -138,6 +138,7 @@ class BreakoutGame {
 
     launchBall() {
         if (!this.state.isPlaying && !this.state.gameOver) {
+            // This part is already good as it just sets direction, not frame-by-frame movement
             this.state.ball.dx = this.state.ball.speed * Math.cos(this.state.ball.angle);
             this.state.ball.dy = this.state.ball.speed * Math.sin(this.state.ball.angle);
             this.state.isPlaying = true;
@@ -179,19 +180,23 @@ class BreakoutGame {
         this.progressIndicator.shake.timer = this.progressIndicator.shake.duration;
     }
 
-    updatePaddle() {
-        if (this.state.keys.left && this.state.paddle.x > 0) {
-            this.state.paddle.x -= this.PADDLE_SPEED;
-        }
-        if (this.state.keys.right && this.state.paddle.x < this.ctx.canvas.width - this.PADDLE_WIDTH) {
-            this.state.paddle.x += this.PADDLE_SPEED;
-        }
+// Modify the method to accept deltaTime
+updatePaddle(deltaTime) {
+    // Calculate adjusted paddle speed
+    const adjustedSpeed = this.PADDLE_SPEED * deltaTime * 60;
 
-        if (!this.state.isPlaying) {
-            this.state.ball.x = this.state.paddle.x + this.PADDLE_WIDTH / 2;
-            this.state.ball.y = this.state.paddle.y - this.BALL_RADIUS;
-        }
+    if (this.state.keys.left && this.state.paddle.x > 0) {
+        this.state.paddle.x -= adjustedSpeed;
     }
+    if (this.state.keys.right && this.state.paddle.x < this.ctx.canvas.width - this.PADDLE_WIDTH) {
+        this.state.paddle.x += adjustedSpeed;
+    }
+
+    if (!this.state.isPlaying) {
+        this.state.ball.x = this.state.paddle.x + this.PADDLE_WIDTH / 2;
+        this.state.ball.y = this.state.paddle.y - this.BALL_RADIUS;
+    }
+}
 
     checkBlockCollisions() {
         for (let block of this.state.blocks) {
@@ -351,7 +356,7 @@ class BreakoutGame {
         const now = Date.now();
         const deltaTime = (now - this.lastTimestamp) / 1000;
         this.lastTimestamp = now;
-
+    
         // Update timer
         if (this.state.isPlaying && !this.state.gameOver) {
             this.state.timeLeft -= deltaTime;
@@ -360,15 +365,17 @@ class BreakoutGame {
                 this.game.endMinigame("Time's up! You lost at Breakout.", false);
             }
         }
-
+    
         if (this.state.isPlaying && !this.state.gameOver) {
-            this.state.ball.x += this.state.ball.dx;
-            this.state.ball.y += this.state.ball.dy;
+            // Modify these two lines:
+            this.state.ball.x += this.state.ball.dx * deltaTime * 60;
+            this.state.ball.y += this.state.ball.dy * deltaTime * 60;
             this.checkCollisions();
             this.checkBlockCollisions();
         }
-
-        this.updatePaddle();
+    
+        // Make sure to pass deltaTime to updatePaddle
+        this.updatePaddle(deltaTime);
         this.updateMessages(deltaTime);
         this.updateParticles(deltaTime);
         this.updateProgressShake(deltaTime);
