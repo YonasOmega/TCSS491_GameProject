@@ -10,25 +10,28 @@ class Target {
         this.game = game;
         this.x = x;
         this.y = y;
-        this.maxRadius = 33;
+        this.maxRadius = 30;
         this.minRadius = 1;
         this.currentRadius = this.minRadius;
-        this.growthRate = 0.11; // Adjust growth rate as desired
+        this.growthRate = 0.245; // Adjust growth rate as desired
         this.growing = true;
         this.removeFromWorld = false;
         this.cometImage = cometImage; // Use the passed image
         this.scored = false;
     }
 
-    update() {
+    update(deltaTime) {
+        // Default to 1/60 if deltaTime not provided (for backward compatibility)
+        deltaTime = deltaTime || 1/60;
+        
         // Animate the target: grow then shrink
         if (this.growing) {
-            this.currentRadius += this.growthRate;
+            this.currentRadius += this.growthRate * deltaTime * 60;
             if (this.currentRadius >= this.maxRadius) {
                 this.growing = false;
             }
         } else {
-            this.currentRadius -= this.growthRate;
+            this.currentRadius -= this.growthRate * deltaTime * 60;
             if (this.currentRadius <= this.minRadius) {
                 if (!this.scored) {
                     this.game.lives--;
@@ -38,7 +41,7 @@ class Target {
                 this.removeFromWorld = true;
             }
         }
-
+    
         // Check for click detection
         if (this.game.game.click && this.isClicked(this.game.game.click)) {
             if (!this.scored) {
@@ -115,6 +118,8 @@ class Blasteroid {
         this.showRedFlash = false;
         this.flashDuration = 150; // milliseconds
         this.flashStartTime = 0;
+        this.lastTimestamp = Date.now();
+
 
         this.cursorImage = new Image();
         this.cursorImage.src = './assets/red_crosshair.png'; // Adjust the path as needed
@@ -313,14 +318,19 @@ playGunSound() {
     }
 
     update() {
+        // Add this at the beginning of update method:
+        const now = Date.now();
+        const deltaTime = (now - this.lastTimestamp) / 1000; // Convert to seconds
+        this.lastTimestamp = now;
+    
         if (this.showTitleScreen) {
             return; // Don't update game state while on title screen
         }
-
-            // Handle red flash timing
-    if (this.showRedFlash && Date.now() - this.flashStartTime > this.flashDuration) {
-        this.showRedFlash = false;
-    }
+    
+        // Handle red flash timing
+        if (this.showRedFlash && Date.now() - this.flashStartTime > this.flashDuration) {
+            this.showRedFlash = false;
+        }
         
         // LOSS CONDITION: If lives are 0 (game ends), then check if score > 20.
         if (this.lives <= 0 && !this.gameOver) {
@@ -335,7 +345,7 @@ playGunSound() {
             }, 100);
             return;
         }
-
+    
         // Spawn new targets at defined intervals
         if (this.gameStarted && !this.gameOver) {
             const currentTime = Date.now();
@@ -344,14 +354,14 @@ playGunSound() {
                 this.lastSpawnTime = currentTime;
             }
         }
-
-        // Update each target
+    
+        // Update each target - modify this part:
         for (let target of this.targets) {
-            if (typeof target.update === "function") target.update();
+            if (typeof target.update === "function") target.update(deltaTime);
         }
         // Remove targets flagged for removal
         this.targets = this.targets.filter(target => !target.removeFromWorld);
-
+    
         // Check for achievement message removal
         if (this.showAchievement && Date.now() - this.achievementTimestamp > 1500) {
             this.hideAchievementMessage();
