@@ -96,9 +96,9 @@ initializeBackgroundMusic() {
             "System boot complete."
         ];
         const instructionsText = [
-            "Welcome, Pilot!",
-            "Complete trials to move the ship closer to its destination.",
-            "Fail three trials and the ship explodes!",
+            "Welcome, User!",
+            "Complete trials to unlock system privileges.",
+            "Fail three trials and the system terminates!",
             "Good luck!",
             "ATTEMPT TRIAL 1? [Y]"
         ];
