@@ -3,10 +3,12 @@ import { TypingGame } from "./typingGame.js"; // Import TypingGame
 import { BreakoutGame } from "./breakout.js";
 import { Terminal } from "./terminal.js";
 import { Blasteroid } from "./blasteroid.js";
-import { ChessGame } from "./chess.js";
 import { RiddleGame } from "./riddle.js";
 import { GameOverScreen } from "./gameOverScreen.js";
 import { TrialManager } from "./trialManager.js";
+import { MemoryGame } from "./memoryGame.js"
+import { AsteroidGame } from "./asteroid.js";
+import { CreditsScreen } from "./credits.js";
 
 class GameEngine {
     constructor(options) {
@@ -23,6 +25,7 @@ class GameEngine {
         this.currentTrial = 1;
         // Create a trial manager instance to track successes and failures.
         this.trialManager = new TrialManager(this);
+        this.creditsScreen = null; // For the credits screen
     }
 
     init(ctx) {
@@ -71,7 +74,7 @@ class GameEngine {
         }
     
         // Check win condition: if the player has completed all four trials
-        if (this.currentTrial > 4) {
+        if (this.currentTrial > 5) {
             console.log("Game Won: All trials completed.");
             this.currentGameOverScreen = new GameOverScreen(this, "Congratulations! You have won the game.");
             this.addEntity(this.currentGameOverScreen);
@@ -87,7 +90,35 @@ class GameEngine {
         this.currentGameOverScreen = new GameOverScreen(this, resultMessage);
         this.addEntity(this.currentGameOverScreen);
     }
-    
+    // Start the Credits screen
+    startCredits() {
+        console.log("🚀 Starting Credits Sequence...");
+        // Remove Terminal listeners if active
+        if (this.currentTerminal) {
+            this.currentTerminal.removeListeners();
+        }
+        // Clear entities
+        this.entities = [];
+        // Create and start the credits screen
+        this.creditsScreen = new CreditsScreen(this);
+    }
+
+    // End the Credits screen and return to terminal
+    endCredits() {
+        console.log("🔄 Ending Credits Sequence...");
+        if (this.creditsScreen) {
+            this.creditsScreen.removeListeners();
+        }
+        this.creditsScreen = null;
+
+        // Clear canvas before returning to the terminal
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+
+        // Create a new Terminal instance (skip bootup)
+        this.currentTerminal = new Terminal(this, false);
+        this.addEntity(this.currentTerminal);
+    }
+
     endGameOverScreen() {
         console.log("🔄 Transitioning from Game Over Screen to Terminal...");
     
@@ -149,19 +180,19 @@ class GameEngine {
         window.addEventListener("keyup", (event) => (this.keys[event.key] = false));
 
         // Debugging keybinds: Quickly pass or fail a minigame using keys "1" and "2"
-        if (this.options.debugging) {
-            window.addEventListener("keydown", (event) => {
-                if (this.currentMinigame) {
-                    if (event.key === "{") {
-                        console.log("Debug: Simulating minigame success");
-                        this.endMinigame("Trial passed (debug)", true);
-                    } else if (event.key === "}") {
-                        console.log("Debug: Simulating minigame failure");
-                        this.endMinigame("Trial failed (debug)", false);
-                    }
-                }
-            });
-        }
+        // if (this.options.debugging) {
+        //     window.addEventListener("keydown", (event) => {
+        //         if (this.currentMinigame) {
+        //             if (event.key === "{") {
+        //                 console.log("Debug: Simulating minigame success");
+        //                 this.endMinigame("Trial passed (debug)", true);
+        //             } else if (event.key === "}") {
+        //                 console.log("Debug: Simulating minigame failure");
+        //                 this.endMinigame("Trial failed (debug)", false);
+        //             }
+        //         }
+        //     });
+        // }
     }
 
     addEntity(entity) {
@@ -196,14 +227,14 @@ class GameEngine {
         this.currentMinigame = new Blasteroid(this);
         this.currentMinigameType = "blasteroid";
     }
-    // Start Chess Game
-    startChessGame() {
-        console.log("🚀 Starting Chess Minigame...");
+    // Start Memory Game
+    startMemoryGame() {
+        console.log("🚀 Starting Riddle Minigame...");
         if (this.currentTerminal) {
             this.currentTerminal.removeListeners();
         }
-        this.currentMinigame = new ChessGame(this);
-        this.currentMinigameType = "chess";
+        this.currentMinigame = new MemoryGame(this);
+        this.currentMinigameType = "memory";
     }
     // Start Riddle Game
     startRiddleGame() {
@@ -213,6 +244,15 @@ class GameEngine {
         }
         this.currentMinigame = new RiddleGame(this);
         this.currentMinigameType = "riddle";
+    }
+    // Start Asteroid Game
+    startAsteroidGame() {
+        console.log("🚀 Starting Asteroid Minigame...");
+        if (this.currentTerminal) {
+            this.currentTerminal.removeListeners();
+        }
+        this.currentMinigame = new AsteroidGame(this);
+        this.currentMinigameType = "asteroid";
     }
 
     // New method to start a trial from the Terminal's Y/N prompt.
@@ -231,6 +271,12 @@ class GameEngine {
             case 4:
                 this.startRiddleGame();
                 break;
+            case 5:
+                this.startMemoryGame();
+                break;
+            case 6:
+                this.startAsteroidGame();
+                break;
             default:
                 this.startTypingGame();
         }
@@ -238,9 +284,11 @@ class GameEngine {
 
     draw() {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        if (this.currentMinigame) {
+        if (this.creditsScreen) {
+            // Draw the credits screen
+            this.creditsScreen.draw(this.ctx);
+        } else if (this.currentMinigame) {
             // Draw the active minigame
-            console.log("🚀 Drawing minigame!");
             this.currentMinigame.draw(this.ctx);
         } else {
             // Draw all entities (including Terminal)
@@ -249,9 +297,11 @@ class GameEngine {
             }
         }
     }
-    
+
     update() {
-        if (this.currentMinigame) {
+        if (this.creditsScreen) {
+            this.creditsScreen.update();
+        } else if (this.currentMinigame) {
             this.currentMinigame.update();
         } else {
             for (let i = 0; i < this.entities.length; i++) {
@@ -269,3 +319,4 @@ class GameEngine {
 }
 
 export { GameEngine };
+ 
