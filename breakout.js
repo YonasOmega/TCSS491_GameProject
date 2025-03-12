@@ -13,8 +13,8 @@ class BreakoutGame {
         this.PADDLE_WIDTH = 150;
         this.PADDLE_HEIGHT = 15;
         this.PADDLE_SPEED = 20;        // Slightly faster paddle
-        this.INITIAL_BALL_SPEED = 16;
-        this.SPEED_INCREMENT = 0.4;    // Reduced speed increment for smoother difficulty progression
+        this.INITIAL_BALL_SPEED = 15;
+        this.SPEED_INCREMENT = 0.2;    // Reduced speed increment for smoother difficulty progression
 
         // New win condition: break 15 blocks to win
         this.BLOCKS_TO_WIN = 15;
