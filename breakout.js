@@ -351,35 +351,43 @@ updatePaddle(deltaTime) {
         }
     }
 
-    update() {
-        // Calculate delta time
-        const now = Date.now();
-        const deltaTime = (now - this.lastTimestamp) / 1000;
-        this.lastTimestamp = now;
-    
-        // Update timer
-        if (this.state.isPlaying && !this.state.gameOver) {
-            this.state.timeLeft -= deltaTime;
-            if (this.state.timeLeft <= 0) {
-                this.state.gameOver = true;
-                this.game.endMinigame("Time's up! You lost at Breakout.", false);
-            }
+update() {
+    // Calculate delta time
+    const now = Date.now();
+    const deltaTime = (now - this.lastTimestamp) / 1000;
+    this.lastTimestamp = now;
+
+    // Update timer
+    if (this.state.isPlaying && !this.state.gameOver) {
+        this.state.timeLeft -= deltaTime;
+        if (this.state.timeLeft <= 0) {
+            this.state.gameOver = true;
+            this.game.endMinigame("Time's up! You lost at Breakout.", false);
         }
-    
-        if (this.state.isPlaying && !this.state.gameOver) {
-            // Modify these two lines:
-            this.state.ball.x += this.state.ball.dx * deltaTime * 60;
-            this.state.ball.y += this.state.ball.dy * deltaTime * 60;
+    }
+
+    if (this.state.isPlaying && !this.state.gameOver) {
+        // Replace the direct ball movement with sub-stepping
+        const steps = Math.ceil(this.state.ball.speed / 5); // More steps for faster balls
+        const stepDeltaTime = deltaTime / steps;
+        
+        for (let i = 0; i < steps; i++) {
+            // Move the ball a smaller amount
+            this.state.ball.x += this.state.ball.dx * stepDeltaTime * 60;
+            this.state.ball.y += this.state.ball.dy * stepDeltaTime * 60;
+            
+            // Check collisions after each small movement
             this.checkCollisions();
             this.checkBlockCollisions();
         }
-    
-        // Make sure to pass deltaTime to updatePaddle
-        this.updatePaddle(deltaTime);
-        this.updateMessages(deltaTime);
-        this.updateParticles(deltaTime);
-        this.updateProgressShake(deltaTime);
     }
+
+    // Make sure to pass deltaTime to updatePaddle
+    this.updatePaddle(deltaTime);
+    this.updateMessages(deltaTime);
+    this.updateParticles(deltaTime);
+    this.updateProgressShake(deltaTime);
+}
 
     draw() {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
